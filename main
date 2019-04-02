@@ -134,3 +134,20 @@ var servicePeriodRange = lineItemSheet.getRange(1,9,1,1);
     ui.alert('Process cancelled, the invoice has been created but not sent');
   }
 }
+function mergeTransationData() {
+  var sourcesheet = SpreadsheetApp.getActive();
+  var sourcetab = sourcesheet.getSheetByName('Purchase Data');
+  var sourcerange = sourcetab.getRange(sourcetab.getLastRow(),1,1,12);
+  var sourcevalues = sourcerange.getValues();
+  var targettab = sourcesheet.getSheetByName('Historical Data');
+  var invoicedate = sourcetab.getRange(sourcetab.getLastRow(),6,1,1).getValue();
+  var calcsheet = sourcesheet.getSheetByName('Details and Calculations');
+  var invoicedatetarget = calcsheet.getRange(27,2,1,1);
+  var invoicenumber = sourcetab.getRange(sourcetab.getLastRow(),7,1,1).getValue();
+  var invoicenumbertarget = calcsheet.getRange(28,2,1,1);
+
+    invoicenumbertarget.setValue(invoicenumber);
+    invoicedatetarget.setValue(invoicedate);
+    targettab.getRange(targettab.getLastRow()+1,1,1,12).setValues(sourcevalues);
+    sourcetab.deleteRow(sourcerange.getRow());  
+}
