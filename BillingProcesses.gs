@@ -118,7 +118,7 @@ var servicePeriodRange = lineItemSheet.getRange(1,9,1,1);
   var deliveryaddresses = detailsource.getRange(4,2,1,1).getValues();
   var emailsubject = detailsource.getRange(49,1,1,1).getValues();
   var emailtext = detailsource.getRange(50,1,1,1).getValues();
-  GmailApp.createDraft(deliveryaddresses, emailsubject, emailtext,{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', bcc: 'invoices@fitanalytics.com; C.Klawitter@steuerberater-zp.de', attachments:[blob.getAs(MimeType.PDF)],htmlbody:true, footer:true})
+  GmailApp.createDraft(deliveryaddresses, emailsubject, emailtext,{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', bcc: 'invoices@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)],htmlbody:true, footer:true})
   //MailApp.sendEmail('kyle@fitanalytics.com','Our invoice for ' + invoiceperiod, 'Invoice PDF Attached.', { name: 'Fit Analytics GmbH Accounts Receivable', attachments:[blob.getAs(MimeType.PDF)]});
   var destinationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Incoming Line Items');
   var destinationRange = destinationSheet.getRange(destinationSheet.getLastRow()+1,1,1,10);
