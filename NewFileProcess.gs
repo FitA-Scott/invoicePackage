@@ -42,8 +42,8 @@ function requirePassword(){
       var targetsheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI');
       var targettab = targetsheet.getSheetByName('Client Master List');
       var targettabdata = targettab.getDataRange();
-      var targetcompanyname = targettab.getRange(targettabdata.getLastRow()+1,1,1,1);
-      var targetclientnumber = targettab.getRange(targettabdata.getLastRow()+1,2,1,1);
+      var targetcompanyname = targettab.getRange(targettabdata.getLastRow()+1,2,1,1);
+      var targetclientnumber = targettab.getRange(targettabdata.getLastRow()+1,1,1,1);
       var targettaxnumber = targettab.getRange(targettabdata.getLastRow()+1,4,1,1);
       var targetdocid = targettab.getRange(targettabdata.getLastRow()+1,6,1,1);
   
