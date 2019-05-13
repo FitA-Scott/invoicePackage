@@ -49,12 +49,14 @@ function savePDF( optSSId, optSheetId ) {
   var lineItem = description + ' - ' + product + ' // ' + servicePeriod
   var startDate = calculationSource.getRange(24,2,1,1).getValue();
   var endDate = calculationSource.getRange(25,2,1,1).getValue();
+  var taxRate = calculationSource.getRange(14,2,1,1).getValue();
   var lineItemSheet = SpreadsheetApp.getActive().getSheetByName('Billing Log');
   var invoiceNumberRange = lineItemSheet.getRange(1,2,1,1);
   var accountNameRange = lineItemSheet.getRange(1,3,1,1);
   var lineItemRange = lineItemSheet.getRange(1,4,1,1);
   var startDateRange = lineItemSheet.getRange(1,5,1,1);
   var endDateRange = lineItemSheet.getRange(1,6,1,1);
+  var taxRateRange = lineItemSheet.getRange(1,7,1,1);
   var billCurrencyRange = lineItemSheet.getRange(1,8,1,1);
   var nettoAmountRange = lineItemSheet.getRange(1,9,1,1);
   var dueDateRange = lineItemSheet.getRange(1,14,1,1);
@@ -63,6 +65,7 @@ function savePDF( optSSId, optSheetId ) {
   lineItemRange.setValue(lineItem);
   startDateRange.setValue(startDate);
   endDateRange.setValue(endDate);
+  taxRateRange.setValue(taxRate);
   nettoAmountRange.setValue(nettoAmount);
   dueDateRange.setValue(dueDate);
   billCurrencyRange.setValue(billCurrency);
