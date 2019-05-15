@@ -141,16 +141,18 @@ function moveBillingLogLineItem() {
   var billingLogLineItem = SpreadsheetApp.getActive().getSheetByName('Billing Log').getRange(1,1,1,14).getValues();
       destinationRange.setValues(billingLogLineItem);
 }
-function mergeTransationData() {
+function mergeTransactionData() {
   var sourcesheet = SpreadsheetApp.getActive();
   var sourcetab = sourcesheet.getSheetByName('Purchase Data');
-  var sourcerange = sourcetab.getRange(sourcetab.getLastRow(),1,1,12);
+  var sourcerange = sourcetab.getRange(sourcetab.getLastRow(),1,1,14);
   var sourcevalues = sourcerange.getValues();
   var targettab = sourcesheet.getSheetByName('Historical Data');
   var targetMonth = sourcetab.getRange(sourcetab.getLastRow(),6,1,1).getValue();
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
-    
+  var companyNumber = sourcetab.getRange(sourcetab.getLastRow(),1,1,1).getValue();
+    if (companyNumber >= 0) {
     invoiceMonth.setValue(targetMonth);
-    targettab.getRange(targettab.getLastRow()+1,1,1,12).setValues(sourcevalues);
+    targettab.getRange(targettab.getLastRow()+1,1,1,14).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());  
+  }
 }

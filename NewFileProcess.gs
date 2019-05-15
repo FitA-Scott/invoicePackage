@@ -8,9 +8,7 @@ function CopyTemplate() {
   var newdoc = DriveApp.getFileById(active.getId()).makeCopy(filename, destfolder)
   var newdocid = newdoc.getId();      
         destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
-        return newdocid;
-        
-        
+        return newdocid;        
 }
 
 function openNewInvoiceDoc() {
