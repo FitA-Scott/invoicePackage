@@ -7,13 +7,15 @@ function onOpen(e) {
     ui.createMenu('Billing')
       .addItem('Create PDF', 'savePDF')
       .addItem('Create Historical Invoice', 'userInput')
-      .addToUi();
-      mergeTransactionData();
-      showSidebar();
-       searchNumber();     
-  var testRange = active.getSheetByName('Details and Calculations').getRange(38,1,1,1).getValue();
-    if ( testRange == 'Special Item') {
+      .addToUi();      
+      showSidebar();  
+  var specialItemsTest = active.getSheetByName('Details and Calculations').getRange(38,1,1,1).getValue();
+    if ( specialItemsTest == 'Special Item') {
       specialSalesData();
+  var mergeDataTest = active.getSheetByName('Purchase Data').getRange(active.getSheetByName('Purchase Data').getLastRow(),1,1,1).getValue();
+    if ( mergeDateTest != 'Account Number') {
+      mergeTransactionData();
+    }
   }
 } 
 function showSidebar() {
@@ -60,8 +62,8 @@ function savePDF( optSSId, optSheetId ) {
   var description = invoiceSource.getRange(27,2,1,1).getValue();  
   var product = invoiceSource.getRange(27,3,1,1).getValue();
   var lineItem = description + ' - ' + product + ' // ' + servicePeriod
-  var startDate = calculationSource.getRange(22,2,1,1).getValue();
-  var endDate = calculationSource.getRange(23,2,1,1).getValue();
+  var startDate = calculationSource.getRange(24,2,1,1).getValue();
+  var endDate = calculationSource.getRange(25,2,1,1).getValue();
   var taxRate = calculationSource.getRange(14,2,1,1).getValue();
   var lineItemSheet = SpreadsheetApp.getActive().getSheetByName('Billing Log');
   var invoiceNumberRange = lineItemSheet.getRange(1,2,1,1);
@@ -158,17 +160,16 @@ function mergeTransactionData() {
   var sourcesheet = SpreadsheetApp.getActive();
   var sourcetab = sourcesheet.getSheetByName('Purchase Data');
   var sourcerange = sourcetab.getRange(sourcetab.getLastRow(),1,1,12);
-  var testCell = sourcetab.getRange(sourcetab.getLastRow(),1,1,1).getValue();
   var sourcevalues = sourcerange.getValues();
   var targettab = sourcesheet.getSheetByName('Historical Data');
   var targetMonth = sourcetab.getRange(sourcetab.getLastRow(),6,1,1).getValue();
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
-    if ( testCell != "Account Number"){
+
     invoiceMonth.setValue(targetMonth);
     targettab.getRange(targettab.getLastRow()+1,1,1,12).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
-  }
 }
+
 function importCustomerData() {
   var activeSheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations')
   var detailSheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI').getSheetByName('Client Info Update');  
@@ -199,10 +200,10 @@ function specialSalesData() {
   var itemsheet = SpreadsheetApp.getActive().getSheetByName('Itemised Info');
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
   var currentmonth = calcsheet.getRange(21,2,1,1).getValue();
-  var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/14j0ZpxIBU85hUtRwCrhlQ73N30MsXTMu3LACG7RY4iw/edit", ' + '"Purchases ' + currentmonth + '!A2:G")';
-  var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/14j0ZpxIBU85hUtRwCrhlQ73N30MsXTMu3LACG7RY4iw/edit", ' + '"Returns ' + currentmonth + '!A2:G")';
+  var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1d5S90-6Ndzro8pPqovS--DTxof89BITvFHN08WlgO0o/edit", ' + '"Purchases ' + currentmonth + '!A2:J")';
+  var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1d5S90-6Ndzro8pPqovS--DTxof89BITvFHN08WlgO0o/edit", ' + '"Returns ' + currentmonth + '!A2:J")';
   var purchaseFormulaDest = itemsheet.getRange(3,1,1,1);
-  var returnFormulaDest = itemsheet.getRange(3,9,1,1);
+  var returnFormulaDest = itemsheet.getRange(3,12,1,1);
     purchaseFormulaDest.setValue(purchaseFormula);
     returnFormulaDest.setValue(returnFormula);  
 }
