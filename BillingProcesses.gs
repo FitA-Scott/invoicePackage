@@ -133,7 +133,10 @@ function savePDF( optSSId, optSheetId ) {
   var deliveryaddresses = detailsource.getRange(4,2,1,1).getValues();
   var emailsubject = detailsource.getRange(49,1,1,1).getValues();
   var emailtext = detailsource.getRange(50,1,1,1).getValues();
-  GmailApp.createDraft(deliveryaddresses, emailsubject, emailtext,{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', bcc: 'invoices@fitanalytics.com; C.Klawitter@steuerberater-zp.de', attachments:[blob.getAs(MimeType.PDF)],htmlbody:true, footer:true})
+  var sheetbodytext = detailsource.getRange(50,1,1,1).getValues(); //returns a two-dimensional array, the text is in the first item
+  var emailtext = String(sheetbodytext[0]);
+  var emailfooter = ('<div><br><br><br>Mit freundlichen Grüßen / Best regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="164" height="32" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
+  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; C.Klawitter@steuerberater-zp.de', attachments:[blob.getAs(MimeType.PDF)]});  
   //MailApp.sendEmail('kyle@fitanalytics.com','Our invoice for ' + invoiceperiod, 'Invoice PDF Attached.', { name: 'Fit Analytics GmbH Accounts Receivable', attachments:[blob.getAs(MimeType.PDF)]}); 
   moveBillingLogLineItem()
   // Process alternate user response  
