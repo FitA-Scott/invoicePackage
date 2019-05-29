@@ -135,8 +135,8 @@ function savePDF( optSSId, optSheetId ) {
   var emailtext = detailsource.getRange(50,1,1,1).getValues();
   var sheetbodytext = detailsource.getRange(50,1,1,1).getValues(); //returns a two-dimensional array, the text is in the first item
   var emailtext = String(sheetbodytext[0]);
-  var emailfooter = ('<div><br><br><br>Mit freundlichen Grüßen / Best regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
-  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; C.Klawitter@steuerberater-zp.de', attachments:[blob.getAs(MimeType.PDF)]});  
+  var emailfooter = ('<div><br><br><br>Mit freundlichen Grüßen / Best regards</div><br><b>Fit Analytics Accounting Team</b></div><p><div style="font-size:13px; color:#666666">Voigtstraße 3, 10247 Berlin</div><br><div><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="www.fitanalytics.com" width="202" height="48" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:13px; color:#666666"><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>www.fitanalytics.com</div>');
+  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; puz.7002@digi-bel.de', attachments:[blob.getAs(MimeType.PDF)]});  
   //MailApp.sendEmail('kyle@fitanalytics.com','Our invoice for ' + invoiceperiod, 'Invoice PDF Attached.', { name: 'Fit Analytics GmbH Accounts Receivable', attachments:[blob.getAs(MimeType.PDF)]}); 
   moveBillingLogLineItem()
   // Process alternate user response  
@@ -241,7 +241,7 @@ function refreshCustomerData() {
   var newAddressOne = destination.getRange(6,2,1,1);
   var newAddressTwo = destination.getRange(7,2,1,1);
   var newAddressThree = destination.getRange(8,2,1,1);
-  var newVatId = destination.getRange(9,1,1,1);
+  var newVatId = destination.getRange(9,2,1,1);
   var newPoNumber = destination.getRange(10,2,1,1);
   var newCpoRate = destination.getRange(12,2,1,1);
   var newFixedFee = destination.getRange(13,2,1,1);
