@@ -249,7 +249,7 @@ function refreshCustomerData() {
   var newAddressOne = destination.getRange(6,2,1,1);
   var newAddressTwo = destination.getRange(7,2,1,1);
   var newAddressThree = destination.getRange(8,2,1,1);
-  var newVatId = destination.getRange(9,1,1,1);
+  var newVatId = destination.getRange(9,2,1,1);
   var newPoNumber = destination.getRange(10,2,1,1);
   var newCpoRate = destination.getRange(12,2,1,1);
   var newFixedFee = destination.getRange(13,2,1,1);
