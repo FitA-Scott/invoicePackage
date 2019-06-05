@@ -14,7 +14,7 @@ function CopyTemplate() {
   var click = newprompt.getSelectedButton();
   var password = newprompt.getResponseText();
   if (click == newui.Button.OK && password == 'masterclone') {
-        destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
+        destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.EDIT);
         return newdocid;        
     }
   else if (click == newui.Button.OK && password != 'masterclone') {
