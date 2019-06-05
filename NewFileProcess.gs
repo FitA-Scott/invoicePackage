@@ -15,6 +15,7 @@ function CopyTemplate() {
   var password = newprompt.getResponseText();
   if (click == newui.Button.OK && password == 'masterclone') {
         destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.EDIT);
+        openNewInvoiceDoc();
         return newdocid;        
     }
   else if (click == newui.Button.OK && password != 'masterclone') {
@@ -56,12 +57,17 @@ function requirePassword(){
       var targetclientnumber = targettab.getRange(targettabdata.getLastRow()+1,1,1,1);
       var targettaxnumber = targettab.getRange(targettabdata.getLastRow()+1,4,1,1);
       var targetdocid = targettab.getRange(targettabdata.getLastRow()+1,6,1,1);
+      var commonname = tab.getRange(5,3,1,1).getValue();
+      var urlformula = '=HYPERLINK(CONCATENATE("https://docs.google.com/spreadsheets/d/",RC[-1],"/edit#gid=712059032"),RC[-4])';
+      var targetcommonname = targettab.getRange(targettabdata.getLastRow()+1,3,1,1);
+      var targeturlformula = targettab.getRange(targettabdata.getLastRow()+1,7,1,1);
   
       targetcompanyname.setValue(companyname);
       targetclientnumber.setValue(clientnumber);
       targettaxnumber.setValue(taxnumber);
       targetdocid.setValue(newdocid);
-    
+      targetcommonname.setValue(commonname);
+      targeturlformula.setValue(urlformula);
     }
   else if (button == ui.Button.OK && text != 'masterupdate') {
     ui.alert('Password incorrect.'); }
