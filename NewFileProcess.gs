@@ -6,10 +6,22 @@ function CopyTemplate() {
   var filename = (legalname + "-" + clientnumber + "-Invoicing File");
   var destfolder = DriveApp.getFolderById('1aAQef0Op-BEfjq2F2WKpzn7sf_4hEbUc');
   var newdoc = DriveApp.getFileById(active.getId()).makeCopy(filename, destfolder)
-  var newdocid = newdoc.getId();      
+  var newdocid = newdoc.getId();
+  var newui = SpreadsheetApp.getUi();
+  var newprompt = newui.prompt(
+  'Enter password',
+  newui.ButtonSet.OK_CANCEL);
+  var click = newprompt.getSelectedButton();
+  var password = newprompt.getResponseText();
+  if (click == newui.Button.OK && password == 'masterclone') {
         destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
         return newdocid;        
-}
+    }
+  else if (click == newui.Button.OK && password != 'masterclone') {
+    newui.alert('Password incorrect.'); }  
+  else if (click == newui.Button.CANCEL) {}
+  else if (click == newui.Button.CLOSE) {}
+}  
 
 function openNewInvoiceDoc() {
   var folder = DriveApp.getFolderById('1aAQef0Op-BEfjq2F2WKpzn7sf_4hEbUc');
