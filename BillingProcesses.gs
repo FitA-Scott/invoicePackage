@@ -59,8 +59,8 @@ function savePDF( optSSId, optSheetId ) {
   var description = invoiceSource.getRange(27,2,1,1).getValue();  
   var product = invoiceSource.getRange(27,3,1,1).getValue();
   var lineItem = description + ' - ' + product + ' // ' + servicePeriod
-  var startDate = calculationSource.getRange(22,2,1,1).getValue();
-  var endDate = calculationSource.getRange(23,2,1,1).getValue();
+  var startDate = calculationSource.getRange(24,2,1,1).getValue();
+  var endDate = calculationSource.getRange(25,2,1,1).getValue();
   var taxRate = calculationSource.getRange(14,2,1,1).getValue();
   var lineItemSheet = SpreadsheetApp.getActive().getSheetByName('Billing Log');
   var invoiceNumberRange = lineItemSheet.getRange(1,2,1,1);
