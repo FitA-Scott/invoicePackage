@@ -144,7 +144,7 @@ function savePDF( optSSId, optSheetId ) {
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; dvir@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});    
   }
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','Invoice for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
-  MailApp.sendEmail('puz.7002@digi-bel.de','Rechnungsausgang', { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
+  GmailApp.sendEmail('puz.7002@digi-bel.de','Rechnungsausgang', { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
   moveBillingLogLineItem()
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
@@ -171,10 +171,12 @@ function mergeTransactionData() {
   var testCell = sourcetab.getRange(sourcetab.getLastRow(),1,1,1).getValue();
   var sourcevalues = sourcerange.getValues();
   var targettab = sourcesheet.getSheetByName('Historical Data');
-  var targetMonth = sourcetab.getRange(sourcetab.getLastRow(),6,1,1).getValue();
+  var targetMonth = sourcesheet.getSheetByName('Details and Calculations').getRange(28,2,1,1).getValue();
+  var targetYear = sourcesheet.getSheetByName('Details and Calculations').getRange(27,2,1,1).getValue();
+  var servicePeriod = targetMonth + '-' + targetYear;
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
     if ( testCell != "Account Number"){
-    invoiceMonth.setValue(targetMonth);
+    invoiceMonth.setValue(servicePeriod);
     targettab.getRange(targettab.getLastRow()+1,1,1,12).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
   }
