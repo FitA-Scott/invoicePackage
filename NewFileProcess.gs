@@ -1,4 +1,11 @@
 function CopyTemplate() {
+  var newui = SpreadsheetApp.getUi();
+  var newprompt = newui.prompt(
+  'Enter password',
+  newui.ButtonSet.OK_CANCEL);
+  var click = newprompt.getSelectedButton();
+  var password = newprompt.getResponseText();
+  if (click == newui.Button.OK && password == 'masterclone') {        
   var active = SpreadsheetApp.getActive();
   var tab = active.getSheetByName('Details and Calculations');
   var legalname = tab.getRange(5,2,1,1).getValue();
@@ -7,32 +14,17 @@ function CopyTemplate() {
   var destfolder = DriveApp.getFolderById('1aAQef0Op-BEfjq2F2WKpzn7sf_4hEbUc');
   var newdoc = DriveApp.getFileById(active.getId()).makeCopy(filename, destfolder)
   var newdocid = newdoc.getId();
-  var newui = SpreadsheetApp.getUi();
-  var newprompt = newui.prompt(
-  'Enter password',
-  newui.ButtonSet.OK_CANCEL);
-  var click = newprompt.getSelectedButton();
-  var password = newprompt.getResponseText();
-  if (click == newui.Button.OK && password == 'masterclone') {
         destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.EDIT);
-        openNewInvoiceDoc();
-        return newdocid;        
+  var newdoc = destfolder.get
+  var url = "https://docs.google.com/spreadsheets/d/"+newdocid;
+  var html = "<script>window.open('" + url + "');google.script.host.close();</script>";
+  var userInterface = HtmlService.createHtmlOutput(html);
+        newui.showModalDialog(userInterface, "Opening New Invoice File");        
     }
   else if (click == newui.Button.OK && password != 'masterclone') {
     newui.alert('Password incorrect.'); }  
   else if (click == newui.Button.CANCEL) {}
   else if (click == newui.Button.CLOSE) {}
-}  
-
-function openNewInvoiceDoc() {
-  var folder = DriveApp.getFolderById('1aAQef0Op-BEfjq2F2WKpzn7sf_4hEbUc');
-  var newdoc = folder.get
-  var docid = CopyTemplate();
-  var ui = SpreadsheetApp.getUi();
-  var url = "https://docs.google.com/spreadsheets/d/"+docid;
-  var html = "<script>window.open('" + url + "');google.script.host.close();</script>";
-  var userInterface = HtmlService.createHtmlOutput(html);
-      ui.showModalDialog(userInterface, "Opening New Invoice File");
 }
 
 function requirePassword(){
