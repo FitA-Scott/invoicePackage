@@ -9,7 +9,8 @@ function onOpen(e) {
       .addToUi();
       mergeTransactionData();
       showSidebar();
-       searchNumber();     
+      searchNumber();
+      importCustomerData(); 
   var testRange = active.getSheetByName('Details and Calculations').getRange(38,1,1,1).getValue();
     if ( testRange == 'Special Item') {
       specialSalesData();
@@ -223,7 +224,7 @@ function refreshCustomerData() {
   var current = SpreadsheetApp.getActive();
   var inbound = current.getSheetByName('Customer Data');
   var destination = current.getSheetByName('Details and Calculations');
-  var refreshDate = SpreadsheetApp.getActive().getSheetByName('Invoice').getRange(7,7,1,1).getValue();
+  var refreshDate = new Date();
   var newRefreshDate = inbound.getRange(inbound.getLastRow(),20,1,1);
   var userName = Session.getEffectiveUser();
   var newUserName = inbound.getRange(inbound.getLastRow(),21,1,1);
