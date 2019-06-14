@@ -168,7 +168,7 @@ function moveBillingLogLineItem() {
 function mergeTransactionData() {
   var sourcesheet = SpreadsheetApp.getActive();
   var sourcetab = sourcesheet.getSheetByName('Purchase Data');
-  var sourcerange = sourcetab.getRange(sourcetab.getLastRow(),1,1,12);
+  var sourcerange = sourcetab.getRange(sourcetab.getLastRow(),1,1,13);
   var testCell = sourcetab.getRange(sourcetab.getLastRow(),1,1,1).getValue();
   var sourcevalues = sourcerange.getValues();
   var targettab = sourcesheet.getSheetByName('Historical Data');
@@ -178,7 +178,7 @@ function mergeTransactionData() {
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
     if ( testCell != "Account Number"){
     invoiceMonth.setValue(servicePeriod);
-    targettab.getRange(targettab.getLastRow()+1,1,1,12).setValues(sourcevalues);
+    targettab.getRange(targettab.getLastRow()+1,1,1,13).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
   }
 }
