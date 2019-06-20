@@ -13,10 +13,13 @@
     <input type="button" class="btn btn-danger btn-lg btn-block" class="rounded" value="Create Invoice" onclick="createPDF()" />
     <p><sub>Create invoice with the current information.</sub></p>
     <br>    
-    <input type="button" class="btn btn-danger btn-lg btn-block" class="rounded" value="Historical Invoice" onclick="historicPDF()"/>
-    <p><sub>Create invoice with historical information.</sub></p>
-    <br><br><br><br><br><br><br><br>
-      <span><div><sub><b>Aministrative Functions</b></sub></div></span><br>
+    <input type="button" class="btn btn-danger btn-lg btn-block" class="rounded" value="Correction Note" onclick="historicPDF()"/>
+    <p><sub>Create invoice with corrections.</sub></p>
+    <br>    
+    <input type="button" class="btn btn-danger btn-lg btn-block" class="rounded" value="Cancellation Note" onclick="cancellationNote()"/>
+    <p><sub>Create cancellation note from previous invoice.</sub></p>
+    <br><br>
+      <span><div><b>Aministrative Functions</b><p><sub><i>password required</i></sub></div></span><br>
     <input type="button" class="btn btn-danger btn-lg btn-block" class="rounded" value="Clone" onclick="clonemaster()"/>
     <p><sub>Clone current invoice file.</sub></p>
     <br>    
@@ -44,6 +47,10 @@
     </script>
     <script> function updatelist(){
       google.script.run.requirePassword();
+    }
+    </script>
+    <script> function cancellationNote(){
+      google.script.run.createCancellation();
     }
     </script>
   </body>

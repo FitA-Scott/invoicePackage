@@ -298,3 +298,8 @@ function refreshCustomerData() {
     newCpoMax.setValue(cpoMax);
     }
 }
+function createCancellation(){
+  var invoiceType = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(44,2,1,1);
+  var cancellationValue = "Cancellation";
+  invoiceType.setValue(cancellationValue);
+}
