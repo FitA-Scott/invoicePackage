@@ -17,8 +17,8 @@ function CopyTemplate() {
         destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.EDIT);
   var newdoc = destfolder.get
   var url = "https://docs.google.com/spreadsheets/d/"+newdocid;
-  var html = "<script>window.open('" + url + "');google.script.host.close();</script>";
-  var userInterface = HtmlService.createHtmlOutput(html);
+  var openNew = "<script>window.open('" + url + "');google.script.host.close();</script>";
+  var userInterface = HtmlService.createHtmlOutput(openNew);
         newui.showModalDialog(userInterface, "Opening New Invoice File");        
     }
   else if (click == newui.Button.OK && password != 'masterclone') {
