@@ -232,6 +232,7 @@ function refreshCustomerData() {
   var billingEmails = inbound.getRange(inbound.getLastRow(),10,1,1).getValue();
   var billingContacts = inbound.getRange(inbound.getLastRow(),9,1,1).getValue();  
   var legalName = inbound.getRange(inbound.getLastRow(),5,1,1).getValue();
+  var commonName = inbound.getRange(inbound.getLastRow(),3,1,1).getValue();
   var addressOne = inbound.getRange(inbound.getLastRow(),6,1,1).getValue();
   var addressTwo = inbound.getRange(inbound.getLastRow(),7,1,1).getValue();
   var addressThree = inbound.getRange(inbound.getLastRow(),8,1,1).getValue();
@@ -249,6 +250,7 @@ function refreshCustomerData() {
   var newBillingEmails = destination.getRange(4,2,1,1);
   var newBillingContacts = destination.getRange(3,2,1,1);
   var newLegalName = destination.getRange(5,2,1,1);
+  var newCommonName = destination.getRange(5,3,1,1);
   var newAddressOne = destination.getRange(6,2,1,1);
   var newAddressTwo = destination.getRange(7,2,1,1);
   var newAddressThree = destination.getRange(8,2,1,1);
@@ -266,6 +268,7 @@ function refreshCustomerData() {
   newBillingEmails.setValue(billingEmails);
   newBillingContacts.setValue(billingContacts);
   newLegalName.setValue(legalName);
+  newCommonName.setValue(commonName);
   newAddressOne.setValue(addressOne);
   newAddressTwo.setValue(addressTwo);
   newAddressThree.setValue(addressThree);
