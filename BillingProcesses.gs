@@ -10,7 +10,7 @@ function onOpen(e) {
       mergeTransactionData();
       showSidebar();
       searchNumber();
-      importCustomerData(); 
+      importCustomerData();
   var testRange = active.getSheetByName('Details and Calculations').getRange(38,1,1,1).getValue();
     if ( testRange == 'Special Item') {
       specialSalesData();
@@ -23,7 +23,71 @@ function showSidebar() {
   SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
       .showSidebar(list);
 }
+function routeProcess(){
+  var reviewTest = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(4,6,1,1).getValue();
+  var approvalTest = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(6,6,1,1).getValue();
+    Logger.log('reviewTest returns '+ reviewTest + ' and approvalTest returns ' + approvalTest);
+      if (reviewTest === 'Not Required'){
+      savePDF();
+      }
+      if (reviewTest === 'Required'){
+        if (approvalTest === 'Approved'){
+        savePDF();
+        }      
+        if (approvalTest !== 'Approved'){
+        approvalProcess();
+        }
+      }   
+}
 
+function approvalProcess( optSSId, optSheetId ){
+  ui.alert('Approval is required. A proof will be created and sent to Tom and Sebastian for approval.');
+  var workingSheet = SpreadsheetApp.getActive();
+  var calcSheet = workingSheet.getSheetByName('Details and Calculations');
+  var invoiceSheet = workingSheet.getSheetByName('Invoice');
+  var companyName = calcSheet.getRange(5,3,1,1).getValue();
+  var invoiceNumber = invoiceSheet.getRange(8,7,1,1).getValue();
+  var invoicePeriod = invoiceSheet.getRange(9,7,1,1).getValue();
+  var billingDocId = workingSheet.getId();
+  var accountNumber = calcSheet.getRange(11,2,1,1).getValue();
+  var messageSubject = '[Invoice Approval] '+ companyName +  ' for the service period ' + invoicePeriod;
+  var linkToForm= 'https://docs.google.com/forms/d/e/1FAIpQLSekfBkeUAYiFwMMiKtZBoVcuqRorYOtHqfRpE9QAEdHwvFsVQ/viewform?usp=pp_url&entry.280149682='+companyName+'&entry.163194497='+invoiceNumber+'&entry.974011626='+billingDocId+'&entry.1468691854='+accountNumber;
+  var htmlButton = '<table width="100%" cellspacing="0" cellpadding="0"><tr><td><table cellspacing="0" cellpadding="0"><tr><td style="border-radius: 4px;" bgcolor=“#34495E”><a href="'+ linkToForm +'" target="_blank" style="padding: 8px 12px; border: 1px solid #34495E;border-radius: 4px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #ffffff;text-decoration: none;font-weight:bold;display: inline-block;">Go To Response Form</a></td></tr></table></td></tr></table>';
+  var messageBody = 'Hi All,<p><p>An invoice was created for '+companyName+'that was flagged for review in the Billing Summaries sheet. <p><p>A copy of this invoice can be found attached to this email. Could you please review this invoice and provide an approval or rejection response using the form found by clicking the button below.<br><br><br>'+htmlButton+'<br><br><br>Kind Regards,<p><p><p>Finance and Legal Team';
+  var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
+  var url = ss.getUrl().replace(/edit$/,'');
+  var parents = DriveApp.getFileById(ss.getId()).getParents();
+  if (parents.hasNext()) {
+    var folder = parents.next();
+  }
+  else {
+    folder = DriveApp.getRootFolder();
+  }
+  var sheets = ss.getSheets();
+  var slice = sheets.slice(0,1);
+  for (var i=0; i<slice.length; i++) {
+    var sheet = slice[i];
+    if (optSheetId && optSheetId !== sheet.getSheetId() )continue; 
+    var url_ext = 'export?exportFormat=pdf&format=pdf'
+        + '&gid=' + sheet.getSheetId()
+        // Optional for PDF
+        + '&size=A4'
+        + '&portrait=true'
+        + '&fitw=true'
+        + '&sheetnames=false&printtitle=false&pagenumbers=false'
+        + '&gridlines=false'
+        + '&fzr=false';
+    var header = {
+      headers: {
+        'Authorization': 'Bearer ' +  ScriptApp.getOAuthToken()
+      }
+    }
+    var response = UrlFetchApp.fetch(url + url_ext, header);
+    var blob = response.getBlob().setName('[INVOICE PROOF]_' + invoiceNumber + '_' + companyName + '_' + invoicePeriod + '.pdf');
+    folder.createFile(blob);
+  GmailApp.sendEmail('kyle@fitanalytics.com',messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
+  }
+}
 function userInput() {
   var modal = HtmlService.createHtmlOutputFromFile('Details')
       .setWidth(450)
@@ -115,21 +179,17 @@ function savePDF( optSSId, optSheetId ) {
     var blob = response.getBlob().setName('FitAnalytics_' + invoiceNumber + '_' + accountName + '_' + servicePeriod + '.pdf');
     folder.createFile(blob);
   }
-    var result = ui.alert(
-      'Would you like to e-mail the invoice?',
-      ui.ButtonSet.YES_NO_CANCEL);
+    var result = ui.alert('Would you like to e-mail the invoice?', ui.ButtonSet.YES_NO_CANCEL);
   // Process user response.
   if (result == ui.Button.YES) {
-    ui.alert('An e-mail draft has been created please proofread and send.');
+    ui.alert('An e-mail draft has been created, please proofread and send.');
   //Prepare draft to send to client and second email to send to Digi-Bel and Salesforce
   var infosheet = SpreadsheetApp.getActive();
   var infosource = infosheet.getSheetByName('Invoice');
   var detailsource = infosheet.getSheetByName('Details and Calculations');
   var companyname = infosource.getRange(7,1,1,1).getValues();
   var invoiceperiod = infosource.getRange(9,7,1,1).getValues();
-  // Include cc address in GmailApp options when cc address is used for the invoice.
-  var ccaddress = detailsource.getRange(52,2,1,1).getValues();
-  var bccaddress = detailsource.getRange(53,2,1,1).getValues();
+  var bccaddress = detailsource.getRange(52,2,1,1).getValues();
   var deliveryaddresses = detailsource.getRange(4,2,1,1).getValues();
   var emailsubject = detailsource.getRange(49,1,1,1).getValues();
   var emailtext = detailsource.getRange(50,1,1,1).getValues();
@@ -137,6 +197,8 @@ function savePDF( optSSId, optSheetId ) {
   var emailtext = String(sheetbodytext[0]);
   var bcctest = detailsource.getRange(52,2,1,1).getValue();
   var sfdcid= detailsource.getRange(51,2,1,1).getValue();
+  var reviewTest = detailsource.getRange(3,6,1,1).getValue();
+  var approvalTest = detailsource.getRange(5,6,1,1).getValue();
   var emailfooter = ('<div><br><br><br>Mit freundlichen Grüßen / Best regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
   if (bcctest == 'none') {
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});  
@@ -176,7 +238,10 @@ function mergeTransactionData() {
   var targetYear = sourcesheet.getSheetByName('Details and Calculations').getRange(27,2,1,1).getValue();
   var servicePeriod = targetMonth + '-' + targetYear;
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
+  var review = sourcetab.getRange(sourcetab.getLastRow(),14,1,1).getValue();
+  var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
     if ( testCell != "Account Number"){
+    reviewrange.setValue(review);
     invoiceMonth.setValue(servicePeriod);
     targettab.getRange(targettab.getLastRow()+1,1,1,13).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
