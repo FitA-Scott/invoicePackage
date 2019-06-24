@@ -86,6 +86,17 @@ function approvalProcess( optSSId, optSheetId ){
     var blob = response.getBlob().setName('[INVOICE PROOF]_' + invoiceNumber + '_' + companyName + '_' + invoicePeriod + '.pdf');
     folder.createFile(blob);
   GmailApp.sendEmail('kyle@fitanalytics.com',messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
+  var requestSheet = SpreadsheetApp.openById('1s2RFxnJTBIfIWg64gGqhYv95v0wWTXN0Qp4H4_NvWFA').getSheetByName('Requests');
+  var requestNumberRange = requestSheet.getRange(requestSheet.getLastRow()+1,1,1,1);
+  var requestNameRange = requestSheet.getRange(requestSheet.getLastRow()+1,2,1,1);
+  var requesterId = Session.getEffectiveUser();
+  var requesterRange = requestSheet.getRange(requestSheet.getLastRow()+1,3,1,1);
+  var requestDate = new Date();
+  var requestDateRange = requestSheet.getRange(requestSheet.getLastRow()+1,4,1,1);
+  requestNumberRange.setValue(invoiceNumber);
+  requestNameRange.setValue(companyName);
+  requesterRange.setValue(requesterId);
+  requestDateRange.setValue(requestDate);
   }
 }
 function userInput() {
