@@ -249,7 +249,7 @@ function mergeTransactionData() {
   var targetYear = sourcesheet.getSheetByName('Details and Calculations').getRange(27,2,1,1).getValue();
   var servicePeriod = targetMonth + '-' + targetYear;
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
-  var review = sourcetab.getRange(sourcetab.getLastRow(),14,1,1).getValue();
+  var review = '';
   var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
     if ( testCell != "Account Number"){
     reviewrange.setValue(review);
