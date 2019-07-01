@@ -395,7 +395,7 @@ function CopyTemplate() {
   var destfolder = DriveApp.getFolderById('1aAQef0Op-BEfjq2F2WKpzn7sf_4hEbUc');
   var newdoc = DriveApp.getFileById(active.getId()).makeCopy(filename, destfolder)
   var newdocid = newdoc.getId();
-        destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.EDIT);
+        destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
   var newdoc = destfolder.get
   var url = "https://docs.google.com/spreadsheets/d/"+newdocid;
   var openNew = "<script>window.open('" + url + "');google.script.host.close();</script>";
