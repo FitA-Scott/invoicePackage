@@ -50,16 +50,10 @@ function approvalProcess( optSSId, optSheetId ){
   var invoicePeriod = invoiceSheet.getRange(9,7,1,1).getValue();
   var billingDocId = workingSheet.getId();
   var accountNumber = calcSheet.getRange(11,2,1,1).getValue();
-  var updateNotes = calcSheet.getRange(14,5,1,1).getValue();
   var messageSubject = '[Invoice Approval] '+ companyName +  ' for the service period ' + invoicePeriod;
   var linkToForm= 'https://docs.google.com/forms/d/e/1FAIpQLSekfBkeUAYiFwMMiKtZBoVcuqRorYOtHqfRpE9QAEdHwvFsVQ/viewform?usp=pp_url&entry.280149682='+companyName+'&entry.163194497='+invoiceNumber+'&entry.974011626='+billingDocId+'&entry.1468691854='+accountNumber;
   var htmlButton = '<table width="100%" cellspacing="0" cellpadding="0"><tr><td><table cellspacing="0" cellpadding="0"><tr><td style="border-radius: 4px;" bgcolor=“#34495E”><a href="'+ linkToForm +'" target="_blank" style="padding: 8px 12px; border: 1px solid #34495E;border-radius: 4px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #ffffff;text-decoration: none;font-weight:bold;display: inline-block;">Go To Response Form</a></td></tr></table></td></tr></table>';
-   if (updateNotes == null) {
-      var messageBody = 'Hi All,<p><p>An invoice was created for '+companyName+' that was flagged for review in the Billing Summaries sheet. <p><p>A copy of this invoice can be found attached to this email. Could you please review this invoice and provide an approval or rejection response using the form found by clicking the button below.<br><br><br>'+htmlButton+'<br><br><br>Kind Regards,<p><p><p>Finance and Legal Team';
-        if (updateNotes != null) {
-          var messageBody = 'Hi All,<p><p>The invoice for '+companyName+' that was rejected during the review process has been updated with the following notes:<p><p>' + updateNotes + '<br><br><br>Kind Regards,<p><p><p>Finance and Legal Team';
-      }
-   }   
+  var messageBody = 'Hi All,<p><p>An invoice was created for '+companyName+' that was flagged for review in the Billing Summaries sheet. <p><p>A copy of this invoice can be found attached to this email. Could you please review this invoice and provide an approval or rejection response using the form found by clicking the button below.<br><br><br>'+htmlButton+'<br><br><br>Kind Regards,<p><p><p>Finance and Legal Team';
   var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
   var url = ss.getUrl().replace(/edit$/,'');
   var parents = DriveApp.getFileById(ss.getId()).getParents();
@@ -145,15 +139,15 @@ function savePDF( optSSId, optSheetId ) {
   var endDate = calculationSource.getRange(25,2,1,1).getValue();
   var taxRate = calculationSource.getRange(14,2,1,1).getValue();
   var lineItemSheet = SpreadsheetApp.getActive().getSheetByName('Billing Log');
-  var invoiceNumberRange = lineItemSheet.getRange(1,2,1,1);
-  var accountNameRange = lineItemSheet.getRange(1,3,1,1);
-  var lineItemRange = lineItemSheet.getRange(1,4,1,1);
-  var startDateRange = lineItemSheet.getRange(1,5,1,1);
-  var endDateRange = lineItemSheet.getRange(1,6,1,1);
-  var taxRateRange = lineItemSheet.getRange(1,7,1,1);
-  var billCurrencyRange = lineItemSheet.getRange(1,8,1,1);
-  var nettoAmountRange = lineItemSheet.getRange(1,9,1,1);
-  var dueDateRange = lineItemSheet.getRange(1,14,1,1);
+  var invoiceNumberRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,2,1,1);
+  var accountNameRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,3,1,1);
+  var lineItemRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,4,1,1);
+  var startDateRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,5,1,1);
+  var endDateRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,6,1,1);
+  var taxRateRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,7,1,1);
+  var billCurrencyRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,8,1,1);
+  var nettoAmountRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,9,1,1);
+  var dueDateRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,14,1,1);
   invoiceNumberRange.setValue(invoiceNumber);
   accountNameRange.setValue(accountName);
   lineItemRange.setValue(lineItem);
@@ -255,18 +249,10 @@ function mergeTransactionData() {
   var targetYear = sourcesheet.getSheetByName('Details and Calculations').getRange(27,2,1,1).getValue();
   var servicePeriod = targetMonth + '-' + targetYear;
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
-  var clearResponse = '';
-  var approverRange = sourcesheet.getSheetByName('Details and Calculations').getRange(5,6,1,1);
-  var responseRange = sourcesheet.getSheetByName('Details and Calculations').getRange(6,6,1,1);
-  var timestampRange = sourcesheet.getSheetByName('Details and Calculations').getRange(7,6,1,1);
-  var feedbackRange = sourcesheet.getSheetByName('Details and Calculations').getRange(9,5,1,1);
-  var updatesRange = sourcesheet.getSheetByName('Details and Calculations').getRange(14,5,1,1);
+  var review = '';
+  var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
     if ( testCell != "Account Number"){
-    approverRange.setValue(clearResponse);
-    responseRange.setValue(clearResponse);
-    timestampRange.setValue(clearResponse);
-    feedbackRange.setValue(clearResponse);
-    updatesRange.setValue(clearResponse);
+    reviewrange.setValue(review);
     invoiceMonth.setValue(servicePeriod);
     targettab.getRange(targettab.getLastRow()+1,1,1,13).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
@@ -392,4 +378,74 @@ function createCancellation(){
   var invoiceType = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(44,2,1,1);
   var cancellationValue = "Cancellation";
   invoiceType.setValue(cancellationValue);
+}
+function CopyTemplate() {
+  var newui = SpreadsheetApp.getUi();
+  var newprompt = newui.prompt(
+  'Enter password',
+  newui.ButtonSet.OK_CANCEL);
+  var click = newprompt.getSelectedButton();
+  var password = newprompt.getResponseText();
+  if (click == newui.Button.OK && password == 'masterclone') {        
+  var active = SpreadsheetApp.getActive();
+  var tab = active.getSheetByName('Details and Calculations');
+  var legalname = tab.getRange(5,2,1,1).getValue();
+  var clientnumber = tab.getRange(11,2,1,1).getValue();
+  var filename = (legalname + "-" + clientnumber + "-Invoicing File");
+  var destfolder = DriveApp.getFolderById('1aAQef0Op-BEfjq2F2WKpzn7sf_4hEbUc');
+  var newdoc = DriveApp.getFileById(active.getId()).makeCopy(filename, destfolder)
+  var newdocid = newdoc.getId();
+        destfolder.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.EDIT);
+  var newdoc = destfolder.get
+  var url = "https://docs.google.com/spreadsheets/d/"+newdocid;
+  var openNew = "<script>window.open('" + url + "');google.script.host.close();</script>";
+  var userInterface = HtmlService.createHtmlOutput(openNew);
+        newui.showModalDialog(userInterface, "Opening New Invoice File");        
+    }
+  else if (click == newui.Button.OK && password != 'masterclone') {
+    newui.alert('Password incorrect.'); }  
+  else if (click == newui.Button.CANCEL) {}
+  else if (click == newui.Button.CLOSE) {}
+}
+
+function requirePassword(){
+  var ui = SpreadsheetApp.getUi();
+  var result = ui.prompt(
+  'Enter password',
+  ui.ButtonSet.OK_CANCEL);
+  
+  var button = result.getSelectedButton();
+  var text = result.getResponseText();
+  if (button == ui.Button.OK && text == 'masterupdate' && SpreadsheetApp.getActive().getId() != 'M6KI4FZZCbq3pMjhKpJGSpUVA7j-W5aRr') {
+      var sheet = SpreadsheetApp.getActive();
+      var tab = sheet.getSheetByName('Details and Calculations');
+      var newdocid = sheet.getId();
+      var companyname = tab.getRange(5,2,1,1).getValue();
+      var clientnumber = tab.getRange(11,2,1,1).getValue();
+      var taxnumber = tab.getRange(9,2,1,1).getValue();
+      var targetsheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI');
+      var targettab = targetsheet.getSheetByName('Client Master List');
+      var targettabdata = targettab.getDataRange();
+      var targetcompanyname = targettab.getRange(targettabdata.getLastRow()+1,2,1,1);
+      var targetclientnumber = targettab.getRange(targettabdata.getLastRow()+1,1,1,1);
+      var targettaxnumber = targettab.getRange(targettabdata.getLastRow()+1,4,1,1);
+      var targetdocid = targettab.getRange(targettabdata.getLastRow()+1,6,1,1);
+      var commonname = tab.getRange(5,3,1,1).getValue();
+      var urlformula = '=HYPERLINK(CONCATENATE("https://docs.google.com/spreadsheets/d/",RC[-1],"/edit#gid=712059032"),RC[-4])';
+      var targetcommonname = targettab.getRange(targettabdata.getLastRow()+1,3,1,1);
+      var targeturlformula = targettab.getRange(targettabdata.getLastRow()+1,7,1,1);
+  
+      targetcompanyname.setValue(companyname);
+      targetclientnumber.setValue(clientnumber);
+      targettaxnumber.setValue(taxnumber);
+      targetdocid.setValue(newdocid);
+      targetcommonname.setValue(commonname);
+      targeturlformula.setValue(urlformula);
+    }
+  else if (button == ui.Button.OK && text != 'masterupdate') {
+    ui.alert('Password incorrect.'); }
+    else if (button == ui.Button.OK && SpreadsheetApp.getActive().getId() == 'M6KI4FZZCbq3pMjhKpJGSpUVA7j-W5aRr') {
+    ui.alert('You cannot add the Template to the Master List.'); }  
+  else if (button == ui.Button.CANCEL) {}
+  else if (button == ui.Button.CLOSE) {}  
 }
