@@ -217,7 +217,7 @@ function savePDF( optSSId, optSheetId ) {
   else if (bcctest != null) {
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; dvir@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});    
   }
-  MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','Invoice for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
+  MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
   GmailApp.sendEmail('puz.7002@digi-bel.de','Rechnungsausgang','',{ name: 'Fit Analytics Accounts Receivable',from: 'invoices@fitanalytics.com',replyto: 'invoices@fitanalytics.com',htmlBody: emailtext + emailfooter, attachments:[blob.getAs(MimeType.PDF)]}); 
   moveBillingLogLineItem()
   // Process alternate user response  
