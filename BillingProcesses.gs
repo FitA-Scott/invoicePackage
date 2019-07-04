@@ -289,10 +289,10 @@ function specialSalesData() {
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
   var currentmonth = calcsheet.getRange(21,2,1,1).getValue();
   var datalocation = calcsheet.getRange(53,2,1,1).getValue();
-  var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Purchases ' + currentmonth + '!A1:H")';
-  var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Returns ' + currentmonth + '!A1:H")';
+  var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Purchases ' + currentmonth + '!A1:J")';
+  var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Returns ' + currentmonth + '!A1:I")';
   var purchaseFormulaDest = itemsheet.getRange(1,1,1,1);
-  var returnFormulaDest = itemsheet.getRange(1,10,1,1);
+  var returnFormulaDest = itemsheet.getRange(1,12,1,1);
     purchaseFormulaDest.setValue(purchaseFormula);
     returnFormulaDest.setValue(returnFormula);  
 }
