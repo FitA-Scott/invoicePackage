@@ -288,10 +288,11 @@ function specialSalesData() {
   var itemsheet = SpreadsheetApp.getActive().getSheetByName('Itemised Info');
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
   var currentmonth = calcsheet.getRange(21,2,1,1).getValue();
-  var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/14j0ZpxIBU85hUtRwCrhlQ73N30MsXTMu3LACG7RY4iw/edit", ' + '"Purchases ' + currentmonth + '!A2:G")';
-  var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/14j0ZpxIBU85hUtRwCrhlQ73N30MsXTMu3LACG7RY4iw/edit", ' + '"Returns ' + currentmonth + '!A2:G")';
-  var purchaseFormulaDest = itemsheet.getRange(3,1,1,1);
-  var returnFormulaDest = itemsheet.getRange(3,9,1,1);
+  var datalocation = calcsheet.getRange(53,2,1,1).getValue();
+  var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Purchases ' + currentmonth + '!A1:G")';
+  var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Returns ' + currentmonth + '!A1:G")';
+  var purchaseFormulaDest = itemsheet.getRange(1,1,1,1);
+  var returnFormulaDest = itemsheet.getRange(1,10,1,1);
     purchaseFormulaDest.setValue(purchaseFormula);
     returnFormulaDest.setValue(returnFormula);  
 }
