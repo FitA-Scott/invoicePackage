@@ -293,6 +293,7 @@ function specialSalesData() {
   var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Returns ' + currentmonth + '!A1:I")';
   var purchaseFormulaDest = itemsheet.getRange(1,1,1,1);
   var returnFormulaDest = itemsheet.getRange(1,12,1,1);
+  ui.alert('This Invoice uses a special data set to calculate the final price. Please check the Itemised Info tab.');
     purchaseFormulaDest.setValue(purchaseFormula);
     returnFormulaDest.setValue(returnFormula);  
 }
