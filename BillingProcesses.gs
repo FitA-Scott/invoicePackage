@@ -125,7 +125,7 @@ function savePDF( optSSId, optSheetId ) {
   var calculationSource = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
   var invoiceSource = SpreadsheetApp.getActive().getSheetByName('Invoice');
   var invoiceNumber = invoiceSource.getRange(8,7,1,1).getValue();
-  var accountNameText = invoiceSource.getRange(27,1,1,1).getValue();
+  var accountNameText = calculationSource.getRange(5,3,1,1).getValue();
   var accountName = accountNameText.replace(" ","_",'g');
   var dueDate = calculationSource.getRange(47,2,1,1).getValue();
   var nettoAmount = invoiceSource.getRange(31,7,1,1).getValue();
