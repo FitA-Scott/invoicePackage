@@ -249,7 +249,7 @@ function mergeTransactionData() {
   var targettab = sourcesheet.getSheetByName('Historical Data');
   var targetMonth = sourcesheet.getSheetByName('Details and Calculations').getRange(28,2,1,1).getValue();
   var targetYear = sourcesheet.getSheetByName('Details and Calculations').getRange(27,2,1,1).getValue();
-  var servicePeriod = targetMonth + '-' + targetYear;
+  var servicePeriod = targetMonth +  targetYear;
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
   var review = '';
   var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
