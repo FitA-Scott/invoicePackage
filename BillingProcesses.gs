@@ -254,7 +254,6 @@ function mergeTransactionData() {
   var review = '';
   var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
     if ( testCell != "Account Number"){
-    reviewrange.setValue(review);
     invoiceMonth.setValue(servicePeriod);
     targettab.getRange(targettab.getLastRow()+1,1,1,13).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
