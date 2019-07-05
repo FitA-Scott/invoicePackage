@@ -222,7 +222,9 @@ function savePDF( optSSId, optSheetId ) {
   moveBillingLogLineItem()
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
-    ui.alert('Print invoice before closing');
+    ui.alert('Print invoice before closing. please note that a copy of the email has been sent to both Digi-Bel and Salesforce.');
+    MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
+    GmailApp.sendEmail('puz.7002@digi-bel.de','Rechnungsausgang','',{ name: 'Fit Analytics Accounts Receivable',from: 'invoices@fitanalytics.com',replyto: 'invoices@fitanalytics.com',htmlBody: emailtext + emailfooter, attachments:[blob.getAs(MimeType.PDF)]}); 
     moveBillingLogLineItem()
   // User cancels process
   } else if (result == ui.Button.CANCEL) {
