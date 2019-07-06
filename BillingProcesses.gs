@@ -85,7 +85,15 @@ function approvalProcess( optSSId, optSheetId ){
     var response = UrlFetchApp.fetch(url + url_ext, header);
     var blob = response.getBlob().setName('[INVOICE PROOF]_' + invoiceNumber + '_' + companyName + '_' + invoicePeriod + '.pdf');
     folder.createFile(blob);
-  GmailApp.sendEmail('schulze@fitanalytics.com;shenhav@fitanalytics.com',messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
+  var twoApprovers = 'shulze@fitanalytics.com; shenhav@fitanalytics.com';
+  var threeApprovers = 'shulze@fitanalytics.com; shenhav@fitanalytics.com; dvir@fitanalytics.com';
+  var region = calcSheet.getRange(8,3,1,1).getValue();
+  if (region == "North America"){
+    GmailApp.sendEmail(threeApprovers,messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
+   }
+  else {
+    GmailApp.sendEmail(twoApprovers,messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
+   }
   var requestSheet = SpreadsheetApp.openById('1s2RFxnJTBIfIWg64gGqhYv95v0wWTXN0Qp4H4_NvWFA').getSheetByName('Requests');
   var requestNumberRange = requestSheet.getRange(requestSheet.getLastRow()+1,1,1,1);
   var requestNameRange = requestSheet.getRange(requestSheet.getLastRow()+1,2,1,1);
