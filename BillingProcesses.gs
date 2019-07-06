@@ -27,14 +27,14 @@ function routeProcess(){
   var reviewTest = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(4,6,1,1).getValue();
   var approvalTest = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(6,6,1,1).getValue();
     Logger.log('reviewTest returns '+ reviewTest + ' and approvalTest returns ' + approvalTest);
-      if (reviewTest === 'Not Required'){
+      if (reviewTest == 'Not Required'){
       savePDF();
       }
-      if (reviewTest === 'Required'){
-        if (approvalTest === 'Approved'){
+      if (reviewTest == 'Required'){
+        if (approvalTest == 'Approved'){
         savePDF();
         }      
-        if (approvalTest !== 'Approved'){
+        if (approvalTest != 'Approved'){
         approvalProcess();
         }
       }   
