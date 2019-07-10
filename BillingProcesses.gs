@@ -8,6 +8,8 @@ function onOpen(e) {
       .addItem('Authorise User', 'showSidebar')
       .addItem('Find Contract', 'viewContract')
       .addToUi();
+      }
+function startFunctions(){      
       mergeTransactionData();
       showSidebar();
       searchNumber();
