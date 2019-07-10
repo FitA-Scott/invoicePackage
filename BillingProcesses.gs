@@ -352,10 +352,8 @@ function refreshCustomerData() {
   var newCpoMax = destination.getRange(22,2,1,1);
   var newsalesforceId = destination.getRange(51,2,1,1);
   // Constant Values that should be moved every time the refresh is run
-  newBillingEmails.setValue(billingEmails);
-  newBillingContacts.setValue(billingContacts);
+  newBillingEmails.setValue(billingEmails);  
   newLegalName.setValue(legalName);
-  newCommonName.setValue(commonName);
   newAddressOne.setValue(addressOne);
   newAddressTwo.setValue(addressTwo);
   newAddressThree.setValue(addressThree);
@@ -383,6 +381,12 @@ function refreshCustomerData() {
     }
   if (cpoMax != null) {
     newCpoMax.setValue(cpoMax);
+    }
+  if (billingContacts == '') {
+    newBillingContacts.setValue('Accounts Payable');
+    }
+    else if (billingContacts != null) {
+    newBillingContacts.setValue(billingContacts);
     }
 }
 function createCancellation(){
