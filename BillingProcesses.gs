@@ -274,9 +274,9 @@ function importCustomerData() {
   var activeSheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations')
   var detailSheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI').getSheetByName('Client Info Update');  
   var updateRowNum = searchNumber(); 
-  var updateInfo = detailSheet.getRange(updateRowNum,1,1,26).getValues();
+  var updateInfo = detailSheet.getRange(updateRowNum,1,1,27).getValues();
   var updateSheet = SpreadsheetApp.getActive().getSheetByName('Customer Data');
-  var updateDest = updateSheet.getRange(updateSheet.getLastRow()+1,1,1,26);
+  var updateDest = updateSheet.getRange(updateSheet.getLastRow()+1,1,1,27);
   updateDest.setValues(updateInfo);
   refreshCustomerData();
 }
@@ -315,9 +315,9 @@ function refreshCustomerData() {
   var inbound = current.getSheetByName('Customer Data');
   var destination = current.getSheetByName('Details and Calculations');
   var refreshDate = new Date();
-  var newRefreshDate = inbound.getRange(inbound.getLastRow(),21,1,1);
+  var newRefreshDate = inbound.getRange(inbound.getLastRow(),22,1,1);
   var userName = Session.getEffectiveUser();
-  var newUserName = inbound.getRange(inbound.getLastRow(),22,1,1);
+  var newUserName = inbound.getRange(inbound.getLastRow(),23,1,1);
   //New values imported form Salesforce report
   var billingEmails = inbound.getRange(inbound.getLastRow(),10,1,1).getValue();
   var billingContacts = inbound.getRange(inbound.getLastRow(),9,1,1).getValue();  
@@ -333,10 +333,11 @@ function refreshCustomerData() {
   var paymentTerms = inbound.getRange(inbound.getLastRow(),13,1,1).getValue();
   var currency = inbound.getRange(inbound.getLastRow(),12,1,1).getValue();
   var billMethod = inbound.getRange(inbound.getLastRow(),11,1,1).getValue();
-  var cpoMin = inbound.getRange(inbound.getLastRow(),17,1,1).getValue();
-  var cpoMax = inbound.getRange(inbound.getLastRow(),18,1,1).getValue();
-  var salesforceId = inbound.getRange(inbound.getLastRow(),19,1,1).getValue();
-  var contractFolder = inbound.getRange(inbound.getLastRow(),20,1,1).getValue();
+  var cpoMin = inbound.getRange(inbound.getLastRow(),18,1,1).getValue();
+  var cpoMax = inbound.getRange(inbound.getLastRow(),19,1,1).getValue();
+  var salesforceId = inbound.getRange(inbound.getLastRow(),20,1,1).getValue();
+  var contractFolder = inbound.getRange(inbound.getLastRow(),21,1,1).getValue();
+  var perPurchase = inbound.getRange(inbound.getLastRow(),17,1,1).getValue();
   // Destinations for the new values
   var newBillingEmails = destination.getRange(4,2,1,1);
   var newBillingContacts = destination.getRange(3,2,1,1);
@@ -356,6 +357,7 @@ function refreshCustomerData() {
   var newCpoMax = destination.getRange(22,2,1,1);
   var newsalesforceId = destination.getRange(51,2,1,1);
   var newContractFolder = destination.getRange(24,6,1,1);
+  var newPPP = destination.getRange(16,2,1,1);
   // Constant Values that should be moved every time the refresh is run
   newBillingEmails.setValue(billingEmails);  
   newLegalName.setValue(legalName);
@@ -388,6 +390,9 @@ function refreshCustomerData() {
   if (cpoMax != null) {
     newCpoMax.setValue(cpoMax);
     }
+  if (perPurchase != null) {
+    newPPP.setValue(perPurchase);
+    }  
   if (billingContacts == '') {
     newBillingContacts.setValue('Accounts Payable');
     }
