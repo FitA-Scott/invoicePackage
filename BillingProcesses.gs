@@ -138,37 +138,8 @@ function savePDF( optSSId, optSheetId ) {
   var invoiceNumber = invoiceSource.getRange(8,7,1,1).getValue();
   var accountNameText = calculationSource.getRange(5,3,1,1).getValue();
   var accountName = accountNameText.replace(" ","_",'g');
-  var dueDate = calculationSource.getRange(47,2,1,1).getValue();
-  var nettoAmount = invoiceSource.getRange(31,7,1,1).getValue();
-  var billCurrency = calculationSource.getRange(45,2,1,1).getValue();
   var servicePeriodText = invoiceSource.getRange(9,7,1,1).getValue();
   var servicePeriod = servicePeriodText.replace(" ","_");
-  var description = invoiceSource.getRange(27,2,1,1).getValue();  
-  var product = invoiceSource.getRange(27,3,1,1).getValue();
-  var lineItem = description + ' - ' + product + ' // ' + servicePeriod
-  var startDate = calculationSource.getRange(24,2,1,1).getValue();
-  var endDate = calculationSource.getRange(25,2,1,1).getValue();
-  var taxRate = calculationSource.getRange(14,2,1,1).getValue();
-  var lineItemSheet = SpreadsheetApp.getActive().getSheetByName('Billing Log');
-  var invoiceNumberRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,2,1,1);
-  var accountNameRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,3,1,1);
-  var lineItemRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,4,1,1);
-  var startDateRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,5,1,1);
-  var endDateRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,6,1,1);
-  var taxRateRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,7,1,1);
-  var billCurrencyRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,8,1,1);
-  var nettoAmountRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,9,1,1);
-  var dueDateRange = lineItemSheet.getRange(lineItemSheet.getLastRow()+1,14,1,1);
-  invoiceNumberRange.setValue(invoiceNumber);
-  accountNameRange.setValue(accountName);
-  lineItemRange.setValue(lineItem);
-  startDateRange.setValue(startDate);
-  endDateRange.setValue(endDate);
-  taxRateRange.setValue(taxRate);
-  nettoAmountRange.setValue(nettoAmount);
-  dueDateRange.setValue(dueDate);
-  billCurrencyRange.setValue(billCurrency);
-
   var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
   var url = ss.getUrl().replace(/edit$/,'');
   var parents = DriveApp.getFileById(ss.getId()).getParents();
@@ -247,8 +218,8 @@ function savePDF( optSSId, optSheetId ) {
 }
 function moveBillingLogLineItem() {
   var destinationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Incoming Line Items');
-  var destinationRange = destinationSheet.getRange(destinationSheet.getLastRow()+1,1,1,14);
-  var billingLogLineItem = SpreadsheetApp.getActive().getSheetByName('Billing Log').getRange(1,1,1,14).getValues();
+  var destinationRange = destinationSheet.getRange(destinationSheet.getLastRow()+1,1,1,15);
+  var billingLogLineItem = SpreadsheetApp.getActive().getSheetByName('Billing Log').getRange(2,1,1,15).getValues();
       destinationRange.setValues(billingLogLineItem);
 }
 function mergeTransactionData() {
