@@ -306,8 +306,8 @@ function refreshCustomerData() {
   var billMethod = inbound.getRange(inbound.getLastRow(),11,1,1).getValue();
   var cpoMin = inbound.getRange(inbound.getLastRow(),18,1,1).getValue();
   var cpoMax = inbound.getRange(inbound.getLastRow(),19,1,1).getValue();
-  var salesforceId = inbound.getRange(inbound.getLastRow(),20,1,1).getValue();
-  var contractFolder = inbound.getRange(inbound.getLastRow(),21,1,1).getValue();
+  var salesforceId = inbound.getRange(inbound.getLastRow(),21,1,1).getValue();
+  var contractFolder = inbound.getRange(inbound.getLastRow(),22,1,1).getValue();
   var perPurchase = inbound.getRange(inbound.getLastRow(),17,1,1).getValue();
   // Destinations for the new values
   var newBillingEmails = destination.getRange(4,2,1,1);
