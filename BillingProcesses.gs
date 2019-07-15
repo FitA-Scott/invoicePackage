@@ -299,7 +299,7 @@ function refreshCustomerData() {
   var addressThree = inbound.getRange(inbound.getLastRow(),8,1,1).getValue();
   var vatId = inbound.getRange(inbound.getLastRow(),4,1,1).getValue();
   var poNumber = inbound.getRange(inbound.getLastRow(),14,1,1).getValue();
-  var cpoRate = inbound.getRange(inbound.getLastRow(),16,1,1).getValue();
+  var cpoRate = inbound.getRange(inbound.getLastRow(),17,1,1).getValue();
   var fixedFee = inbound.getRange(inbound.getLastRow(),15,1,1).getValue();
   var paymentTerms = inbound.getRange(inbound.getLastRow(),13,1,1).getValue();
   var currency = inbound.getRange(inbound.getLastRow(),12,1,1).getValue();
@@ -308,7 +308,7 @@ function refreshCustomerData() {
   var cpoMax = inbound.getRange(inbound.getLastRow(),19,1,1).getValue();
   var salesforceId = inbound.getRange(inbound.getLastRow(),20,1,1).getValue();
   var contractFolder = inbound.getRange(inbound.getLastRow(),21,1,1).getValue();
-  var perPurchase = inbound.getRange(inbound.getLastRow(),17,1,1).getValue();
+  var perPurchase = inbound.getRange(inbound.getLastRow(),16,1,1).getValue();
   // Destinations for the new values
   var newBillingEmails = destination.getRange(4,2,1,1);
   var newBillingContacts = destination.getRange(3,2,1,1);
