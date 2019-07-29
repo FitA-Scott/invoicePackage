@@ -89,7 +89,7 @@ function approvalProcess( optSSId, optSheetId ){
     var blob = response.getBlob().setName('[INVOICE PROOF]_' + invoiceNumber + '_' + companyName + '_' + invoicePeriod + '.pdf');
     folder.createFile(blob);
   var twoApprovers = 'shulze@fitanalytics.com; shenhav@fitanalytics.com';
-  var threeApprovers = 'shulze@fitanalytics.com; shenhav@fitanalytics.com; dvir@fitanalytics.com';
+  var threeApprovers = 'shulze@fitanalytics.com; shenhav@fitanalytics.com; omer@fitanalytics.com';
   var region = calcSheet.getRange(8,3,1,1).getValue();
   if (region == "North America"){
     GmailApp.sendEmail(threeApprovers,messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
@@ -197,7 +197,7 @@ function savePDF( optSSId, optSheetId ) {
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});  
   }
   else if (bcctest != null) {
-  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; dvir@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});    
+  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; omer@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});    
   }
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
   GmailApp.sendEmail('puz.7002@digi-bel.de','Rechnungsausgang','',{ name: 'Fit Analytics Accounts Receivable',from: 'invoices@fitanalytics.com',replyto: 'invoices@fitanalytics.com',htmlBody: emailtext + emailfooter, attachments:[blob.getAs(MimeType.PDF)]}); 
