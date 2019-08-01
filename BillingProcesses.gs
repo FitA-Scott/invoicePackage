@@ -91,12 +91,7 @@ function approvalProcess( optSSId, optSheetId ){
   var twoApprovers = 'shulze@fitanalytics.com; shenhav@fitanalytics.com';
   var threeApprovers = 'shulze@fitanalytics.com; shenhav@fitanalytics.com; omer@fitanalytics.com';
   var region = calcSheet.getRange(8,3,1,1).getValue();
-  if (region == "North America"){
-    GmailApp.sendEmail(threeApprovers,messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
-   }
-  else {
     GmailApp.sendEmail(twoApprovers,messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
-   }
   var requestSheet = SpreadsheetApp.openById('1s2RFxnJTBIfIWg64gGqhYv95v0wWTXN0Qp4H4_NvWFA').getSheetByName('Requests');
   var requestNumberRange = requestSheet.getRange(requestSheet.getLastRow()+1,1,1,1);
   var requestNameRange = requestSheet.getRange(requestSheet.getLastRow()+1,2,1,1);
@@ -188,17 +183,11 @@ function savePDF( optSSId, optSheetId ) {
   var emailtext = detailsource.getRange(50,1,1,1).getValues();
   var sheetbodytext = detailsource.getRange(50,1,1,1).getValues(); //returns a two-dimensional array, the text is in the first item
   var emailtext = String(sheetbodytext[0]);
-  var bcctest = detailsource.getRange(52,2,1,1).getValue();
   var sfdcid= detailsource.getRange(51,2,1,1).getValue();
   var reviewTest = detailsource.getRange(3,6,1,1).getValue();
   var approvalTest = detailsource.getRange(5,6,1,1).getValue();
   var emailfooter = ('<div><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
-  if (bcctest == 'none') {
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});  
-  }
-  else if (bcctest != null) {
-  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; omer@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});    
-  }
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
   GmailApp.sendEmail('puz.7002@digi-bel.de','Rechnungsausgang','',{ name: 'Fit Analytics Accounts Receivable',from: 'invoices@fitanalytics.com',replyto: 'invoices@fitanalytics.com',htmlBody: emailtext + emailfooter, attachments:[blob.getAs(MimeType.PDF)]}); 
   moveBillingLogLineItem()
