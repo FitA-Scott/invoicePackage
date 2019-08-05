@@ -7,9 +7,7 @@ function onOpen(e) {
     ui.createMenu('Billing')
       .addItem('Authorise User', 'showSidebar')
       .addItem('Find Contract', 'viewContract')
-      .addToUi();
-      }
-function startFunctions(){      
+      .addToUi();     
       mergeTransactionData();
       showSidebar();
       searchNumber();
