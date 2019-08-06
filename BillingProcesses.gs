@@ -228,7 +228,7 @@ function mergeTransactionData() {
   }
 }
 function importCustomerData() {
-  var activeSheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations')
+  var activeSheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
   var detailSheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI').getSheetByName('Client Info Update');  
   var updateRowNum = searchNumber(); 
   var updateInfo = detailSheet.getRange(updateRowNum,1,1,27).getValues();
