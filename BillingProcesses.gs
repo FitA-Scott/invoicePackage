@@ -215,13 +215,22 @@ function mergeTransactionData() {
   var testCell = sourcetab.getRange(sourcetab.getLastRow(),1,1,1).getValue();
   var sourcevalues = sourcerange.getValues();
   var targettab = sourcesheet.getSheetByName('Historical Data');
-  var targetMonth = sourcesheet.getSheetByName('Details and Calculations').getRange(28,2,1,1).getValue();
-  var targetYear = sourcesheet.getSheetByName('Details and Calculations').getRange(27,2,1,1).getValue();
+  var details = sourcesheet.getSheetByName('Details and Calculations');
+  var targetMonth = details.getRange(28,2,1,1).getValue();
+  var targetYear = details.getRange(27,2,1,1).getValue();
   var servicePeriod = targetMonth + " " + targetYear;
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
-  var review = '';
+  var clearApproval = ' ';
+  var approval1 = details.getRange(5,6,1,1);
+  var approval2 = details.getRange(6,6,1,1);
+  var approval3 = details.getRange(7,6,1,1);
+  var approval4 = details.getRange(8,6,1,1);    
   var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
     if ( testCell != "Account Number"){
+    approval1.setValue(clearApproval);
+    approval2.setValue(clearApproval);
+    approval3.setValue(clearApproval);
+    approval4.setValue(clearApproval);
     invoiceMonth.setValue(servicePeriod);
     targettab.getRange(targettab.getLastRow()+1,1,1,13).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
