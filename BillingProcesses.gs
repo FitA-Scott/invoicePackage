@@ -447,3 +447,14 @@ function viewContract() {
   var interface = HtmlService.createHtmlOutput(newModal)
   SpreadsheetApp.getUi().showModalDialog(interface, 'Opening contracts folder');
 }
+
+function resetSheet() {
+ var document = SpreadsheetApp.getActive();
+ var calculations = document.getSheetByName('Details and Calculations');
+ var approvalRangeOne = calculations.getRange(5,6,5,1);
+ var cancellationRangeOne = calculations.getRange(15,6,1,1);
+ var clearString = '';
+ var regularString = 'Regular';
+    approvalRangeOne.setValue(clearString);
+    cancellationRangeOne.setValue(regularString);
+}

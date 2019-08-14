@@ -16,7 +16,7 @@
     <input type="button" class="btn btn-danger btn-md btn-block" class="rounded" value="Create Invoice" onclick="createPDF()" />
     <p><sub>Create invoice with the current information.</sub></p>
     <br>    
-    <input type="button" class="btn btn-danger btn-md btn-block" class="rounded" value="Correction Note" onclick="historicPDF()"/>
+    <input type="button" class="btn btn-danger btn-md btn-block" class="rounded" value="Reset Invoice" onclick="resetValues()"/>
     <p><sub>Create invoice with corrections.</sub></p>
     <br>    
     <input type="button" class="btn btn-danger btn-md btn-block" class="rounded" value="Cancellation Note" onclick="cancellationNote()"/>
@@ -44,8 +44,8 @@
       google.script.run.routeProcess();
     }
     </script>
-    <script> function historicPDF(){
-      google.script.run.userInput();
+    <script> function resetValues(){
+      google.script.run.resetSheet();
     }
     </script>
     <script> function clonemaster(){
