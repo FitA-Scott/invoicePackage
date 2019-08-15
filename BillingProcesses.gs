@@ -115,11 +115,9 @@ function logData(billmonth, billyear, adjustment) {
     var invoicesheet = SpreadsheetApp.getActive().getSheetByName('Invoice');
     var ammendRange = invoicesheet.getRange(9,7,1,1);
     var ammendcycle = billmonth + " " + billyear;
-    var ammendyear = detailsheet.getRange(2,56,1,1);
     var invoicetype = 'Cancellation';
     var typeRange = detailsheet.getRange(15,6,1,1);
-           typeRange.setValue(invoicetype);
-           ammendyear.setValue(billyear);   
+           typeRange.setValue(invoicetype);  
            ammendRange.setValue(ammendcycle);
 }
 
