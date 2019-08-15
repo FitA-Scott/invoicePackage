@@ -117,8 +117,11 @@ function logData(billmonth, billyear, adjustment) {
     var ammendcycle = billmonth + " " + billyear;
     var invoicetype = 'Cancellation';
     var typeRange = detailsheet.getRange(15,6,1,1);
+    var multiplierRange = detailsheet.getRange(18,6,1,1);
+    var multiplier = '-1';
            typeRange.setValue(invoicetype);  
            ammendRange.setValue(ammendcycle);
+           multiplierRange.setValue(multiplier);
 }
 
 function savePDF( optSSId, optSheetId ) {
@@ -175,7 +178,7 @@ function savePDF( optSSId, optSheetId ) {
   var deliveryaddresses = detailsource.getRange(4,2,1,1).getValues();
   var emailsubject = detailsource.getRange(49,1,1,1).getValues();
   var emailtext = detailsource.getRange(50,1,1,1).getValues();
-  var sheetbodytext = detailsource.getRange(50,1,1,1).getValues(); //returns a two-dimensional array, the text is in the first item
+  var sheetbodytext = detailsource.getRange(50,1,1,1).getValues();
   var emailtext = String(sheetbodytext[0]);
   var sfdcid= detailsource.getRange(51,2,1,1).getValue();
   var reviewTest = detailsource.getRange(3,6,1,1).getValue();
@@ -220,12 +223,15 @@ function mergeTransactionData() {
   var clearApproval = ' ';
   var approvalRange = details.getRange(5,6,5,1);
   var typeRange = details.getRange(23,6,1,1);
-  var typeName = 'Regular';  
+  var typeName = 'Regular';
+  var multiplyByRange = details.getRange(18,6,1,1);
+  var multiplyBy = '1';
   var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
     if ( testCell != "Account Number"){
     approvalRange.setValue(clearApproval);
     typeRange.setValue(typeName);  
     invoiceMonth.setValue(servicePeriod);
+    multiplyByRange.setValue(multiplyBy);  
     targettab.getRange(targettab.getLastRow()+1,1,1,13).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
   }
@@ -445,6 +451,9 @@ function resetSheet() {
  var cancellationRangeOne = calculations.getRange(15,6,1,1);
  var clearString = '';
  var regularString = 'Regular';
+ var multiplyRange = calculations.getRange(18,6,1,1);
+ var multiply = '1'; 
     approvalRangeOne.setValue(clearString);
     cancellationRangeOne.setValue(regularString);
+    multiplyRange.setValue(multiply);
 }
