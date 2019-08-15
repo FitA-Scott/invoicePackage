@@ -7,6 +7,7 @@ function onOpen(e) {
     ui.createMenu('Billing')
       .addItem('Authorise User', 'showSidebar')
       .addItem('Find Contract', 'viewContract')
+      .addItem('Create Cancellation','createCancellation')
       .addToUi();     
       mergeTransactionData();
       showSidebar();
@@ -21,13 +22,12 @@ function showSidebar() {
   var list = HtmlService.createHtmlOutputFromFile('Sidebar')
       .setTitle('Invoice Functions')
       .setWidth(300);
-  SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+  SpreadsheetApp.getUi()
       .showSidebar(list);
 }
 function routeProcess(){
   var reviewTest = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(4,6,1,1).getValue();
   var approvalTest = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(6,6,1,1).getValue();
-    Logger.log('reviewTest returns '+ reviewTest + ' and approvalTest returns ' + approvalTest);
       if (reviewTest == 'Not Required'){
       savePDF();
       }
@@ -102,28 +102,27 @@ function approvalProcess( optSSId, optSheetId ){
   requestDateRange.setValue(requestDate);
   }
 }
-function userInput() {
-  var modal = HtmlService.createHtmlOutputFromFile('Details')
+
+function createCancellation(){
+  var cancellation = HtmlService.createHtmlOutputFromFile('Details')
       .setWidth(450)
       .setHeight(300);    
-  var dialog = ui.showModalDialog(modal, 'Enter Invoicing Details');
+  SpreadsheetApp.getUi().showModalDialog(cancellation, 'Enter Invoice Details');
 }
 
 function logData(billmonth, billyear, adjustment) {
-    // Logger.log('Concatenated data is: ' + data);
-    //  SpreadsheetApp.getActiveSheet();
-    var sheet = SpreadsheetApp.openById("1OJHsuX-7H1qrQdBntPzxwA97QlgBr9jCWOnDlw4VJIo");
-    //Select the tab you want
-    SpreadsheetApp.setActiveSheet(sheet.getSheets()[1]);
-    //Select reference range in the tab (you might need the concept of "last-current-cell"/"current-cell")
-    var targetCellMonth = sheet.getRange("B28");
-    var targetCellYear = sheet.getRange("B27");
-    var targetCellAdj = sheet.getRange("B30");
-    //Overwrite the value
-    targetCellMonth.setValue(billmonth);
-    targetCellYear.setValue(billyear);
-    targetCellAdj.setValue(adjustment);
+    var detailsheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
+    var invoicesheet = SpreadsheetApp.getActive().getSheetByName('Invoice');
+    var ammendRange = invoicesheet.getRange(9,7,1,1);
+    var ammendcycle = billmonth + " " + billyear;
+    var ammendyear = detailsheet.getRange(2,56,1,1);
+    var invoicetype = 'Cancellation';
+    var typeRange = detailsheet.getRange(15,6,1,1);
+           typeRange.setValue(invoicetype);
+           ammendyear.setValue(billyear);   
+           ammendRange.setValue(ammendcycle);
 }
+
 function savePDF( optSSId, optSheetId ) {
   var calculationSource = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
   var invoiceSource = SpreadsheetApp.getActive().getSheetByName('Invoice');
@@ -221,16 +220,13 @@ function mergeTransactionData() {
   var servicePeriod = targetMonth + " " + targetYear;
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
   var clearApproval = ' ';
-  var approval1 = details.getRange(5,6,1,1);
-  var approval2 = details.getRange(6,6,1,1);
-  var approval3 = details.getRange(7,6,1,1);
-  var approval4 = details.getRange(8,6,1,1);    
+  var approvalRange = details.getRange(5,6,5,1);
+  var typeRange = details.getRange(23,6,1,1);
+  var typeName = 'Regular';  
   var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
     if ( testCell != "Account Number"){
-    approval1.setValue(clearApproval);
-    approval2.setValue(clearApproval);
-    approval3.setValue(clearApproval);
-    approval4.setValue(clearApproval);
+    approvalRange.setValue(clearApproval);
+    typeRange.setValue(typeName);  
     invoiceMonth.setValue(servicePeriod);
     targettab.getRange(targettab.getLastRow()+1,1,1,13).setValues(sourcevalues);
     sourcetab.deleteRow(sourcerange.getRow());
@@ -366,11 +362,7 @@ function refreshCustomerData() {
     newBillingContacts.setValue(billingContacts);
     }
 }
-function createCancellation(){
-  var invoiceType = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(44,2,1,1);
-  var cancellationValue = "Cancellation";
-  invoiceType.setValue(cancellationValue);
-}
+
 function CopyTemplate() {
   var newui = SpreadsheetApp.getUi();
   var newprompt = newui.prompt(

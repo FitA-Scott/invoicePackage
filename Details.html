@@ -3,8 +3,7 @@
     <base target="top">
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
   </head>
-    <body>
-      
+    <body>      
         <form id="invoiceForm">
          <fieldset>
             <legend>Billing Details</legend>
@@ -49,7 +48,7 @@
             </p>
        </fieldset>
       </form> 
-<input type="button" value="Calculate"
+<input type="button" value="OK"
 onclick="addData()" />
 
 <input type="button" value="Cancel"
@@ -59,7 +58,6 @@ onclick="google.script.host.close()" />
     </script>
     <script>
       function addData(){
-        //Retrieving form values
         var billmonth = $('#billmonth').val();
         var billyear = $('#billyear').val();
         var adjustment = $('#adjustment').val();
