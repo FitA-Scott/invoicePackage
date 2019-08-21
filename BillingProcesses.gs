@@ -220,7 +220,7 @@ function mergeTransactionData() {
   var targetYear = details.getRange(27,2,1,1).getValue();
   var servicePeriod = targetMonth + " " + targetYear;
   var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
-  var clearApproval = ' ';
+  var clearApproval = '';
   var approvalRange = details.getRange(5,6,5,1);
   var typeRange = details.getRange(23,6,1,1);
   var typeName = 'Regular';
