@@ -86,7 +86,7 @@ function approvalProcess( optSSId, optSheetId ){
     var response = UrlFetchApp.fetch(url + url_ext, header);
     var blob = response.getBlob().setName('[INVOICE PROOF]_' + invoiceNumber + '_' + companyName + '_' + invoicePeriod + '.pdf');
     folder.createFile(blob);
-  var approvers = 'shulze@fitanalytics.com; shenhav@fitanalytics.com';
+  var approvers = 'schulze@fitanalytics.com; shenhav@fitanalytics.com';
   var region = calcSheet.getRange(8,3,1,1).getValue();
     GmailApp.sendEmail(approvers,messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
   var requestSheet = SpreadsheetApp.openById('1s2RFxnJTBIfIWg64gGqhYv95v0wWTXN0Qp4H4_NvWFA').getSheetByName('Requests');
