@@ -5,7 +5,7 @@
 
 function onOpen(e) {
     ui.createMenu('Billing')
-      .addItem('Authorise User', 'showSidebar')
+      .addItem('Show Navigation Panel', 'showSidebar')
       .addItem('Find Contract', 'viewContract')
       .addItem('Create Cancellation','createCancellation')
       .addToUi();     
