@@ -457,3 +457,10 @@ function resetSheet() {
     cancellationRangeOne.setValue(regularString);
     multiplyRange.setValue(multiply);
 }
+function openAdminPanel(){
+    var panel = HtmlService.createHtmlOutputFromFile('AdminPanel')
+      .setTitle('Admin Panel')
+      .setWidth(300);
+  SpreadsheetApp.getUi()
+      .showSidebar(panel);
+}
