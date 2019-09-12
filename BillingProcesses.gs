@@ -17,6 +17,9 @@ function onOpen(e) {
     if ( testRange == 'Special Item') {
       specialSalesData();
   }
+  else if (testRange == 'Line Items') {
+      pullBillingInfo();
+  }
 } 
 function showSidebar() {
   var list = HtmlService.createHtmlOutputFromFile('Sidebar')
@@ -462,4 +465,16 @@ function openAdminPanel(){
       .setWidth(300);
   SpreadsheetApp.getUi()
       .showSidebar(panel);
+}
+function pullBillingInfo() {
+ var infosheet = SpreadsheetApp.getActive().getSheetByName('Special Data');
+ var detailsheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
+ var purloc = detailsheet.getRange(55,2,1,1).getValue();
+ var retloc = detailsheet.getRange(56,2,1,1).getValue();
+ var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/edit#gid=1444064116",' + purloc + ')';
+ var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/edit#gid=1444064116",' + retloc + ')'; 
+ var purchases = infosheet.getRange(1,1,1,1);
+ var returns = infosheet.getRange(1,9,1,1);
+ purchases.setValue(purformula);
+ returns.setValue(retformula); 
 }
