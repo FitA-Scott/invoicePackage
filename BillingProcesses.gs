@@ -45,7 +45,6 @@ function routeProcess(){
 }
 
 function approvalProcess( optSSId, optSheetId ){
-  ui.alert('Approval is required. A proof will be created and sent to Tom and Sebastian for approval.');
   var workingSheet = SpreadsheetApp.getActive();
   var calcSheet = workingSheet.getSheetByName('Details and Calculations');
   var invoiceSheet = workingSheet.getSheetByName('Invoice');
@@ -54,10 +53,16 @@ function approvalProcess( optSSId, optSheetId ){
   var invoicePeriod = invoiceSheet.getRange(9,7,1,1).getValue();
   var billingDocId = workingSheet.getId();
   var accountNumber = calcSheet.getRange(11,2,1,1).getValue();
+  var ui = SpreadsheetApp.getUi();
+  var result = ui.prompt(
+  'Approval is required for this invoice. Enter a short message for the approver.',
+  ui.ButtonSet.OK_CANCEL);
+  var button = result.getSelectedButton();
+  var text = result.getResponseText();
   var messageSubject = '[Invoice Review] '+ companyName +  ' for the service period ' + invoicePeriod;
   var linkToForm= 'https://docs.google.com/forms/d/e/1FAIpQLSekfBkeUAYiFwMMiKtZBoVcuqRorYOtHqfRpE9QAEdHwvFsVQ/viewform?usp=pp_url&entry.280149682='+companyName+'&entry.163194497='+invoiceNumber+'&entry.974011626='+billingDocId+'&entry.1468691854='+accountNumber;
   var htmlButton = '<table width="100%" cellspacing="0" cellpadding="0"><tr><td><table cellspacing="0" cellpadding="0"><tr><td style="border-radius: 4px;" bgcolor=“#34495E”><a href="'+ linkToForm +'" target="_blank" style="padding: 8px 12px; border: 1px solid #34495E;border-radius: 4px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #ffffff;text-decoration: none;font-weight:bold;display: inline-block;">Go To Response Form</a></td></tr></table></td></tr></table>';
-  var messageBody = 'Hi All,<p><p>An invoice was created for '+companyName+' that was flagged for review in the Billing Summaries sheet. <p><p>A copy of this invoice can be found attached to this email. Could you please review this invoice and provide an approval or rejection response using the form found by clicking the button below.<br><br><br>'+htmlButton+'<br><br><br>Kind Regards,<p><p><p>Finance and Legal Team';
+  var messageBody = 'Hi All,<p><p>An invoice was created for '+companyName+' that was flagged for review in the Billing Summaries sheet. <p><p>' + 'The Billing team has included the following message:<p><p>' + text + '<p><p>A copy of this invoice can be found attached to this email. Could you please review this invoice and provide an approval or rejection response using the form found by clicking the button below.<br><br><br>'+htmlButton+'<br><br><br>Kind Regards,<p><p><p>Finance and Legal Team';
   var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
   var url = ss.getUrl().replace(/edit$/,'');
   var parents = DriveApp.getFileById(ss.getId()).getParents();
