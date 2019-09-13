@@ -59,6 +59,7 @@ function approvalProcess( optSSId, optSheetId ){
   ui.ButtonSet.OK_CANCEL);
   var button = result.getSelectedButton();
   var text = result.getResponseText();
+  if (button = 'OK'){
   var messageSubject = '[Invoice Review] '+ companyName +  ' for the service period ' + invoicePeriod;
   var linkToForm= 'https://docs.google.com/forms/d/e/1FAIpQLSekfBkeUAYiFwMMiKtZBoVcuqRorYOtHqfRpE9QAEdHwvFsVQ/viewform?usp=pp_url&entry.280149682='+companyName+'&entry.163194497='+invoiceNumber+'&entry.974011626='+billingDocId+'&entry.1468691854='+accountNumber;
   var htmlButton = '<table width="100%" cellspacing="0" cellpadding="0"><tr><td><table cellspacing="0" cellpadding="0"><tr><td style="border-radius: 4px;" bgcolor=“#34495E”><a href="'+ linkToForm +'" target="_blank" style="padding: 8px 12px; border: 1px solid #34495E;border-radius: 4px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #ffffff;text-decoration: none;font-weight:bold;display: inline-block;">Go To Response Form</a></td></tr></table></td></tr></table>';
@@ -108,6 +109,7 @@ function approvalProcess( optSSId, optSheetId ){
   requestNameRange.setValue(companyName);
   requesterRange.setValue(requesterId);
   requestDateRange.setValue(requestDate);
+    }
   }
 }
 
