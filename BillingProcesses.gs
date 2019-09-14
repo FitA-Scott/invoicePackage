@@ -453,6 +453,13 @@ function viewContract() {
   SpreadsheetApp.getUi().showModalDialog(interface, 'Opening contracts folder');
 }
 
+function viewInvoices(){
+  var finance = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(19,6,1,1).getValue();
+  var modal2 = '<script>window.open("https://drive.google.com/drive/folders/' + finance + '");google.script.host.close();</script>';
+  var interface = HtmlService.createHtmlOutput(modal2)
+  SpreadsheetApp.getUi().showModalDialog(interface, 'Opening invoices folder');
+}
+
 function resetSheet() {
  var document = SpreadsheetApp.getActive();
  var calculations = document.getSheetByName('Details and Calculations');

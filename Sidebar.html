@@ -10,6 +10,9 @@
     <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Review Contract" onclick="openContract()"/>
     <p><sub>Open contracts folder.</sub></p>
     <br>
+    <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Review Invoices" onclick="openInvoice()"/>
+    <p><sub>Open invoices folder.</sub></p>
+    <br>
     <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Refresh Sheet" onclick="refreshData()"/>
     <p><sub>Refresh customer data from Salesforce.</sub></p>
     <br>    
@@ -30,6 +33,10 @@
     <script> function openContract(){
       google.script.run.viewContract();
     }    
+    </script>
+    <script> function openInvoice(){
+      google.script.run.viewInvoices();
+    }
     </script>
     <script> function refreshData(){
       google.script.run.refreshCustomerData();
@@ -53,5 +60,3 @@
     </script>
   </body>
 </html>
-
-
