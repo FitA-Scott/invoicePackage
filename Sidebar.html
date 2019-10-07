@@ -22,6 +22,9 @@
     <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Cancellation Note" onclick="cancellationNote()"/>
     <p><sub>Create cancellation from historical invoice.</sub></p>
     <br>
+    <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="One-Time Invoice" onclick="oneOffInvoice()"/>
+    <p><sub>Create a one-time invoice.</sub></p>
+    <br>
     <input type="button" class="btn btn-dark btn-md btn-block" class="rounded" value="Create Invoice" onclick="createPDF()" />
     <p><sub>Create invoice with the current information.</sub></p>
     <br><br><br><br><br><br><br><br><br><br>
@@ -52,6 +55,10 @@
     </script>
     <script> function cancellationNote(){
       google.script.run.createCancellation();
+    }
+    </script>
+    <script> function oneOffInvoice(){
+      google.script.run.createOneOff();
     }
     </script>
     <script> function adminPanel(){

@@ -492,3 +492,40 @@ function pullBillingInfo() {
  purchases.setValue(purformula);
  returns.setValue(retformula); 
 }
+
+function createOneOff(){
+  var oneoff = HtmlService.createHtmlOutputFromFile('OneOffInvoice')
+      .setWidth(450)
+      .setHeight(400);    
+  SpreadsheetApp.getUi().showModalDialog(oneoff, 'Enter Invoice Details');
+}
+
+function oneOffInvoice(servicemonth, invoicenumber, itemname, bucket, amount) {
+  var datasheet = SpreadsheetApp.getActive().getSheetByName('Historical Data');
+  var invoicesheet = SpreadsheetApp.getActive().getSheetByName('Invoice');
+  var detailsheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
+  var year = detailsheet.getRange(27,2,1,1).getValue();
+  var serviceperiod = servicemonth + ' ' + year;
+  var newnumber = year + '-' + invoicenumber;
+  var descriptiondest = invoicesheet.getRange(27,2,1,1);
+  var bucketdest = invoicesheet.getRange(27,3,1,1);
+  var serviceperioddest = invoicesheet.getRange(9,7,1,1);
+  var invoicenumberdest = invoicesheet.getRange(8,7,1,1);
+  var amountdest = invoicesheet.getRange(27,7,1,1);
+  var lineitemdest = datasheet.getRange(datasheet.getLastRow()+1,3,1,6);
+  descriptiondest.setValue(itemname);
+  bucketdest.setValue(bucket);
+  serviceperioddest.setValue(serviceperiod);
+  invoicenumberdest.setValue(newnumber);
+  amountdest.setValue(amount);
+  var historyitemnamedest = datasheet.getRange(datasheet.getLastRow()+1,3,1,1);
+  var historybucketdest = datasheet.getRange(datasheet.getLastRow()+1,4,1,1);
+  var historyserviceperioddest = datasheet.getRange(datasheet.getLastRow()+1,6,1,1);
+  var historyamountdest = datasheet.getRange(datasheet.getLastRow()+1,7,1,1);
+  var historyinvoicenumberdest = datasheet.getRange(datasheet.getLastRow()+1,8,1,1);
+  historyitemnamedest.setValue(itemname);
+  historybucketdest.setValue(bucket);
+  historyserviceperioddest.setValue(serviceperiod);
+  historyamountdest.setValue('Total Amount ' + amount);
+  historyinvoicenumberdest.setValue(invoicenumber);  
+}
