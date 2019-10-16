@@ -10,7 +10,6 @@ function onOpen(e) {
       .addItem('Create Cancellation','createCancellation')
       .addToUi();     
       mergeTransactionData();
-      showSidebar();
       searchNumber();
       importCustomerData();
   var testRange = active.getSheetByName('Details and Calculations').getRange(38,1,1,1).getValue();
