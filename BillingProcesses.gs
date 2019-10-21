@@ -9,17 +9,16 @@ function onOpen(e) {
       .addItem('Find Contract', 'viewContract')
       .addItem('Create Cancellation','createCancellation')
       .addToUi();     
-      mergeTransactionData();
+      //mergeTransactionData();
       searchNumber();
       importCustomerData();
+      pullBillingInfo();
   var testRange = active.getSheetByName('Details and Calculations').getRange(38,1,1,1).getValue();
     if ( testRange == 'Special Item') {
       specialSalesData();
   }
-  else if (testRange == 'Line Items') {
-      pullBillingInfo();
-  }
 } 
+
 function showSidebar() {
   var list = HtmlService.createHtmlOutputFromFile('Sidebar')
       .setTitle('Invoice Functions')
@@ -215,7 +214,7 @@ function moveBillingLogLineItem() {
   var billingLogLineItem = SpreadsheetApp.getActive().getSheetByName('Billing Log').getRange(2,1,1,15).getValues();
       destinationRange.setValues(billingLogLineItem);
 }
-function mergeTransactionData() {
+/*function mergeTransactionData() {
   var sourcesheet = SpreadsheetApp.getActive();
   var sourcetab = sourcesheet.getSheetByName('Purchase Data');
   var sourcerange = sourcetab.getRange(sourcetab.getLastRow(),1,1,13);
@@ -243,6 +242,7 @@ function mergeTransactionData() {
     sourcetab.deleteRow(sourcerange.getRow());
   }
 }
+*/
 function importCustomerData() {
   var activeSheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
   var detailSheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI').getSheetByName('Client Info Update');  
@@ -477,13 +477,14 @@ function openAdminPanel(){
   SpreadsheetApp.getUi()
       .showSidebar(panel);
 }
+
 function pullBillingInfo() {
- var infosheet = SpreadsheetApp.getActive().getSheetByName('Special Data');
+ var infosheet = SpreadsheetApp.getActive().getSheetByName('Purchase Data');
  var detailsheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
  var purloc = detailsheet.getRange(55,2,1,1).getValue();
  var retloc = detailsheet.getRange(56,2,1,1).getValue();
- var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/edit#gid=1444064116",' + purloc + ')';
- var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/edit#gid=1444064116",' + retloc + ')'; 
+  var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + purloc + '!A1:G")';
+  var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + retloc + '!A1:G")'; 
  var purchases = infosheet.getRange(1,1,1,1);
  var returns = infosheet.getRange(1,9,1,1);
  purchases.setValue(purformula);
