@@ -9,7 +9,6 @@ function onOpen(e) {
       .addItem('Find Contract', 'viewContract')
       .addItem('Create Cancellation','createCancellation')
       .addToUi();     
-      //mergeTransactionData();
       searchNumber();
       importCustomerData();
       pullBillingInfo();
@@ -214,35 +213,7 @@ function moveBillingLogLineItem() {
   var billingLogLineItem = SpreadsheetApp.getActive().getSheetByName('Billing Log').getRange(2,1,1,15).getValues();
       destinationRange.setValues(billingLogLineItem);
 }
-/*function mergeTransactionData() {
-  var sourcesheet = SpreadsheetApp.getActive();
-  var sourcetab = sourcesheet.getSheetByName('Purchase Data');
-  var sourcerange = sourcetab.getRange(sourcetab.getLastRow(),1,1,13);
-  var testCell = sourcetab.getRange(sourcetab.getLastRow(),1,1,1).getValue();
-  var sourcevalues = sourcerange.getValues();
-  var targettab = sourcesheet.getSheetByName('Historical Data');
-  var details = sourcesheet.getSheetByName('Details and Calculations');
-  var targetMonth = details.getRange(28,2,1,1).getValue();
-  var targetYear = details.getRange(27,2,1,1).getValue();
-  var servicePeriod = targetMonth + " " + targetYear;
-  var invoiceMonth = sourcesheet.getSheetByName('Invoice').getRange(9,7,1,1);
-  var clearApproval = '';
-  var approvalRange = details.getRange(5,6,5,1);
-  var typeRange = details.getRange(23,6,1,1);
-  var typeName = 'Regular';
-  var multiplyByRange = details.getRange(18,6,1,1);
-  var multiplyBy = '1';
-  var reviewrange = sourcesheet.getSheetByName('Details and Calculations').getRange(3,6,1,1);
-    if ( testCell != "Account Number"){
-    approvalRange.setValue(clearApproval);
-    typeRange.setValue(typeName);  
-    invoiceMonth.setValue(servicePeriod);
-    multiplyByRange.setValue(multiplyBy);  
-    targettab.getRange(targettab.getLastRow()+1,1,1,13).setValues(sourcevalues);
-    sourcetab.deleteRow(sourcerange.getRow());
-  }
-}
-*/
+
 function importCustomerData() {
   var activeSheet = SpreadsheetApp.getActive().getSheetByName('Details and Calculations');
   var detailSheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI').getSheetByName('Client Info Update');  
