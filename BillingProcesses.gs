@@ -250,7 +250,17 @@ function specialSalesData() {
   var purchaseFormulaDest = itemsheet.getRange(1,1,1,1);
   var returnFormulaDest = itemsheet.getRange(1,12,1,1);
     purchaseFormulaDest.setValue(purchaseFormula);
-    returnFormulaDest.setValue(returnFormula);  
+    returnFormulaDest.setValue(returnFormula);
+    setSpecialData();  
+}
+
+function setSpecialData(){
+  var datasheet = SpreadsheetApp.getActive().getSheetByName('Itemised Info');
+  var data = datasheet.getRange(1,1,datasheet.getLastRow(),datasheet.getLastColumn());
+  var range = data.getA1Notation();
+  var copy = data.getValues();
+      datasheet.clear({contentsOnly: true});
+      datasheet.getRange(range).setValues(copy);
 }
 
 function refreshCustomerData() {
