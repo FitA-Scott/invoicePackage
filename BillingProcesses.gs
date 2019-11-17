@@ -15,7 +15,6 @@ function onOpen(e) {
       searchNumber();
       importCustomerData();
       pullBillingInfo();
-      assembleLineItems();
   var testRange = active.getSheetByName('Details').getRange(23,2,1,1).getValue();
     if ( testRange != '') {
       specialSalesData();
@@ -440,16 +439,21 @@ function openAdminPanel(){
 }
 
 function pullBillingInfo() {
- var infosheet = SpreadsheetApp.getActive().getSheetByName('Purchase Data');
- var detailsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
- var purloc = detailsheet.getRange(7,5,1,1).getValue();
- var retloc = detailsheet.getRange(8,5,1,1).getValue();
- var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + purloc + '!A1:G")';
- var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + retloc + '!A1:G")'; 
- var purchases = infosheet.getRange(1,1,1,1);
- var returns = infosheet.getRange(1,9,1,1);
+  var infosheet = SpreadsheetApp.getActive().getSheetByName('Purchase Data');
+  var detailsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
+  var itemssheet = SpreadsheetApp.getActive().getSheetByName('Line Items');
+  var purloc = detailsheet.getRange(7,5,1,1).getValue();
+  var retloc = detailsheet.getRange(8,5,1,1).getValue();
+  var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + purloc + '!A1:G")';
+  var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + retloc + '!A1:G")'; 
+  var purchases = infosheet.getRange(1,1,1,1);
+  var returns = infosheet.getRange(1,9,1,1);
+  var formula = '=IMPORTRANGE("1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE","List!A1:M")';
+  var range = itemssheet.getRange(1,1,1,1);
+    range.setValue(formula);
     purchases.setValue(purformula);
     returns.setValue(retformula);
+    assembleLineItems();
 }
 
 function createOneOff(){
@@ -463,13 +467,13 @@ function assembleLineItems(){
   var sheet = SpreadsheetApp.getActive();
   var items = sheet.getSheetByName('Line Items');
   var details = sheet.getSheetByName('Details');
-  var calculations = sheet.getSheetByName('Calculations');
+  var calculations = sheet.getSheetByName('Calculations');  
   var quantity = calculations.getRange(5,5,1,1).getValue();
   var number = details.getRange(5,2,1,1).getValue();
   var numberFinder = items.createTextFinder(number);
   var row = numberFinder.findNext().getRow();
-  var lineItems = items.getRange(row,4,quantity,9).getValues();
-  var itemsRange = calculations.getRange(29,1,quantity,9);
+  var lineItems = items.getRange(row,4,quantity,10).getValues();
+  var itemsRange = calculations.getRange(29,1,quantity,10);
   itemsRange.setValues(lineItems);
   buildHistoricalLineItem();
 }
