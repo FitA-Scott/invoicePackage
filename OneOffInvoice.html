@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <base target="top">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  </head>
+    <body>      
+        <form id="oneoffinvoiceForm">
+         <fieldset>
+            <legend>Invoice Details</legend>
+              <p>
+               <label class="my-label">Service Month</label>
+                 <select id = "servicemonth" name = "servicemonth">
+                    <option value = "January">January</option>
+                    <option value = "February">February</option>
+                    <option value = "March">March</option>
+                    <option value = "April">April</option>
+                    <option value = "May">May</option>
+                    <option value = "June">June</option>
+                    <option value = "July">July</option>
+                    <option value = "August">August</option>
+                    <option value = "September">September</option>
+                    <option value = "October">October</option>
+                    <option value = "November">November</option>
+                    <option value = "December">December</option>
+                 </select>
+              </p>
+              <p>
+              <label>Invoice Number</label>
+              <input type = "number" id = "invoicenumber" name = "invoicenumber"> 
+              </p>
+              <p>
+              <label>Fee Amount</label>
+              <input type = "number" id = "feeamount" name = "feeamount"> 
+              </p>
+       </fieldset>
+       <fieldset>
+          <legend> Item Description </legend>
+            <p>
+              <label>Item Name</label>
+              <input type = "text" id = "itemname" name = "itemname"> 
+            </p>
+            <p>
+               <label class="my-label">Product Bucket</label>
+                 <select id = "bucket" name = "bucket">
+                    <option value = "Fit Finder">Fit Finder</option>
+                    <option value = "Fit Connect">Fit Connect</option>
+                    <option value = "Fit Intelligence">Fit Intelligence</option>
+                    <option value = "Fit Source">Fit Source</option>
+                 </select>
+              </p>
+       </fieldset>
+      </form> 
+<input type="button" value="OK"
+onclick="oneOff()" />
+
+<input type="button" value="Cancel"
+onclick="google.script.host.close()" />
+    
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+    </script>
+    <script>
+      function oneOff(){
+        var servicemonth = $('#servicemonth').val();
+        var invoicenumber = $('#invoicenumber').val();
+        var itemname = $('#itemname').val();
+        var bucket = $('#bucket').val();
+        var amount = $('#feeamount').val();
+
+        google.script.run.withSuccessHandler(closeIt).oneOffInvoice(servicemonth, invoicenumber, itemname, bucket, amount);
+      }
+      function closeIt(){
+        google.script.host.close()
+      }
+      
+    </script>
+  </body>
+</html>
