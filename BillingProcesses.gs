@@ -15,6 +15,7 @@ function onOpen(e) {
       searchNumber();
       importCustomerData();
       pullBillingInfo();
+      assembleLineItems();
   var testRange = active.getSheetByName('Details').getRange(23,2,1,1).getValue();
     if ( testRange != '') {
       specialSalesData();
@@ -449,7 +450,6 @@ function pullBillingInfo() {
  var returns = infosheet.getRange(1,9,1,1);
     purchases.setValue(purformula);
     returns.setValue(retformula);
-    assembleLineItems()
 }
 
 function createOneOff(){
