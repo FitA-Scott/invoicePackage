@@ -469,9 +469,9 @@ function assembleLineItems(){
   var details = sheet.getSheetByName('Details');
   var calculations = sheet.getSheetByName('Calculations');  
   var quantity = calculations.getRange(5,5,1,1).getValue();
-  var number = details.getRange(5,2,1,1).getValue();
-  var numberFinder = items.createTextFinder(number);
-  var row = numberFinder.findNext().getRow();
+  var prefix = details.getRange(4,2,1,1).getValue();
+  var prefixFinder = items.createTextFinder(prefix);
+  var row = prefixFinder.findNext().getRow();
   var lineItems = items.getRange(row,4,quantity,10).getValues();
   var itemsRange = calculations.getRange(29,1,quantity,10);
   itemsRange.setValues(lineItems);
