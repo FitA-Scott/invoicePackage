@@ -41,10 +41,10 @@
               </p>
        </fieldset>
        <fieldset>
-          <legend> Adjustments </legend>
+          <legend> New Invoice Number </legend>
             <p>
-              <label>Adjustments</label>
-              <input type = "number" id = "adjustment" name = "adjustment"> 
+              <label>New Invoice Number</label>
+              <input type = "number" id = "newnum" name = "newnum"> 
             </p>
        </fieldset>
       </form> 
@@ -60,9 +60,9 @@ onclick="google.script.host.close()" />
       function addData(){
         var billmonth = $('#billmonth').val();
         var billyear = $('#billyear').val();
-        var adjustment = $('#adjustment').val();
+        var newnum = $('#newnum').val();
 
-        google.script.run.withSuccessHandler(closeIt).logData(billmonth, billyear, adjustment);
+        google.script.run.withSuccessHandler(closeIt).logData(billmonth, billyear, newnum);
       }
       function closeIt(){
         google.script.host.close()

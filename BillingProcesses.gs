@@ -119,22 +119,25 @@ function createCancellation(){
   SpreadsheetApp.getUi().showModalDialog(cancellation, 'Enter Invoice Details');
 }
 
-function logData(billmonth, billyear, adjustment) {
+function logData(billmonth, billyear, newnum) {
   var detailsheet = SpreadsheetApp.getActive()
   var calc = detailsheet.getSheetByName('Calculations');
   var history = detailsheet.getSheetByName('Historical Data');
   var invoicetype = 'Cancellation';
-  var typeRange = detailsheet.getRange(8,2,1,1);
-  var multiplierRange = detailsheet.getRange(12,2,1,1);
+  var typeRange = calc.getRange(8,2,1,1);
+  var multiplierRange = calc.getRange(12,2,1,1);
   var multiplier = '-1';
   var status = 'Cancelled';
-  var invnum = detailsheet.getRange(10,2,1,1).getValue(); 
+  var invnum = calc.getRange(16,5,1,1).getValue(); 
   var rowFinder = history.createTextFinder(invnum);
   var rowNum = rowFinder.findNext().getRow();
   var newstatus = history.getRange(rowNum,6,1,1);
+  var newinvnum = calc.getRange(16,5,1,1);
     newstatus.setValue(status);
     typeRange.setValue(invoicetype);  
     multiplierRange.setValue(multiplier);
+    newinvnum.setValue(newnum);
+   buildHistoricalLineItem()
 }
 
 function savePDF( optSSId, optSheetId ) {
@@ -539,6 +542,6 @@ function buildHistoricalLineItem(){
   setRetCount.setValue(retCount);
   setRetAmount.setValue(retAmount);
   setReview.setValue(review);
-  setMonth.setValue(month);
+  setMonth.setValue(month);  
   }
 }
