@@ -508,7 +508,8 @@ function buildHistoricalLineItem(){
   var retCount = calculations.getRange(11,5,1,1).getValue();
   var retAmount = calculations.getRange(12,5,1,1).getValue();
   var review = calculations.getRange(2,2,1,1).getValue();
-  var month = today.getMonth();
+  const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+  var month = monthNames[today.getMonth()-1]
   //Get ranges for new Historical Line Item
   var setAcctNumber = history.getRange(last,1,1,1);
   var setAcctName = history.getRange(last,2,1,1);
@@ -524,6 +525,8 @@ function buildHistoricalLineItem(){
   var setReview = history.getRange(last,13,1,1);
   var setMonth = history.getRange(last,14,1,1);
   //Set Historical Line Item
+  var test = history.getRange(history.getLastRow(),6,1,1).getValue();
+  if (test != cycle){
   setAcctNumber.setValue(number);
   setAcctName.setValue(legalName);
   setPrefix.setValue(prefix);
@@ -537,4 +540,5 @@ function buildHistoricalLineItem(){
   setRetAmount.setValue(retAmount);
   setReview.setValue(review);
   setMonth.setValue(month);
+  }
 }
