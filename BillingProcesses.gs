@@ -542,6 +542,15 @@ function buildHistoricalLineItem(){
   setRetCount.setValue(retCount);
   setRetAmount.setValue(retAmount);
   setReview.setValue(review);
-  setMonth.setValue(month);  
+  setMonth.setValue(month);
+    var oldapproval = calculations.getRange(4,2,1,1);
+    var oldapprover = calculations.getRange(5,2,1,1);
+    var oldtime = calculations.getRange(6,2,1,1);
+    var oldfeedback = calculations.getRange(7,2,1,1);
+    var newvalue = '';
+    oldapproval.setValue(newvalue);
+    oldapprover.setValue(newvalue);
+    oldtime.setValue(newvalue);
+    oldfeedback.setValue(newvalue);
   }
 }
