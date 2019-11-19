@@ -27,25 +27,11 @@
                <p>
                <label>Billing Year</label>
                  <select id = "billyear" name = "billyear">
-                    <option value = "2018">2018</option>
                     <option value = "2019">2019</option>
                     <option value = "2020">2020</option>
                     <option value = "2021">2021</option>
-                    <option value = "2022">2022</option>
-                    <option value = "2023">2023</option>
-                    <option value = "2024">2024</option>
-                    <option value = "2025">2025</option>
-                    <option value = "2026">2026</option>
-                    <option value = "2027">2027</option>
                  </select>
               </p>
-       </fieldset>
-       <fieldset>
-          <legend> New Invoice Number </legend>
-            <p>
-              <label>New Invoice Number</label>
-              <input type = "number" id = "newnum" name = "newnum"> 
-            </p>
        </fieldset>
       </form> 
 <input type="button" value="OK"
@@ -60,9 +46,8 @@ onclick="google.script.host.close()" />
       function addData(){
         var billmonth = $('#billmonth').val();
         var billyear = $('#billyear').val();
-        var newnum = $('#newnum').val();
 
-        google.script.run.withSuccessHandler(closeIt).logData(billmonth, billyear, newnum);
+        google.script.run.withSuccessHandler(closeIt).logData(billmonth, billyear);
       }
       function closeIt(){
         google.script.host.close()

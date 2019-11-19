@@ -119,10 +119,17 @@ function createCancellation(){
   SpreadsheetApp.getUi().showModalDialog(cancellation, 'Enter Invoice Details');
 }
 
-function logData(billmonth, billyear, newnum) {
+function logData(billmonth, billyear) {
   var detailsheet = SpreadsheetApp.getActive()
   var calc = detailsheet.getSheetByName('Calculations');
   var history = detailsheet.getSheetByName('Historical Data');
+  var billinglog = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw');
+  var numbersheet = billinglog.getSheetByName('Invoice Numbers');
+  var logsheet = billinglog.getSheetByName('Billing Log');
+  var newrow = logsheet.getRange(logsheet.getLastRow()+1,2,1,1);
+  var newname = logsheet.getRange(logsheet.getLastRow()+1,3,1,1);
+  var prefix = calc.getRange(29,1,1,1).getValue();
+  var newnum = numbersheet.getRange(2,2,1,1).getValue();
   var invoicetype = 'Cancellation';
   var typeRange = calc.getRange(8,2,1,1);
   var multiplierRange = calc.getRange(12,2,1,1);
@@ -137,6 +144,8 @@ function logData(billmonth, billyear, newnum) {
     typeRange.setValue(invoicetype);  
     multiplierRange.setValue(multiplier);
     newinvnum.setValue(newnum);
+    newrow.setValue(newnum);
+    newname.setValue(prefix);
    buildHistoricalLineItem()
 }
 
