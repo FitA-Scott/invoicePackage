@@ -29,8 +29,8 @@ function showSidebar() {
       .showSidebar(list);
 }
 function routeProcess(){
-  var reviewTest = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(4,6,1,1).getValue();
-  var approvalTest = SpreadsheetApp.getActive().getSheetByName('Details and Calculations').getRange(6,6,1,1).getValue();
+  var reviewTest = SpreadsheetApp.getActive().getSheetByName('Calculations').getRange(3,2,1,1).getValue();
+  var approvalTest = SpreadsheetApp.getActive().getSheetByName('Calculations').getRange(4,2,1,1).getValue();
       if (reviewTest == 'Not Required'){
       savePDF();
       }
@@ -115,7 +115,7 @@ function approvalProcess( optSSId, optSheetId ){
 function createCancellation(){
   var cancellation = HtmlService.createHtmlOutputFromFile('Details')
       .setWidth(450)
-      .setHeight(300);    
+      .setHeight(200);    
   SpreadsheetApp.getUi().showModalDialog(cancellation, 'Enter Invoice Details');
 }
 
@@ -126,27 +126,38 @@ function logData(billmonth, billyear) {
   var billinglog = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw');
   var numbersheet = billinglog.getSheetByName('Invoice Numbers');
   var logsheet = billinglog.getSheetByName('Billing Log');
-  var newrow = logsheet.getRange(logsheet.getLastRow()+1,2,1,1);
-  var newname = logsheet.getRange(logsheet.getLastRow()+1,3,1,1);
-  var prefix = calc.getRange(29,1,1,1).getValue();
+  var newcanc = logsheet.getRange(logsheet.getLastRow()+1,2,1,1);
+  var oldnum = calc.getRange(11,2,1,1).getValue();
   var newnum = numbersheet.getRange(2,2,1,1).getValue();
   var invoicetype = 'Cancellation';
   var typeRange = calc.getRange(8,2,1,1);
   var multiplierRange = calc.getRange(12,2,1,1);
   var multiplier = '-1';
-  var status = 'Cancelled';
-  var invnum = calc.getRange(16,5,1,1).getValue(); 
-  var rowFinder = history.createTextFinder(invnum);
-  var rowNum = rowFinder.findNext().getRow();
-  var newstatus = history.getRange(rowNum,6,1,1);
   var newinvnum = calc.getRange(16,5,1,1);
-    newstatus.setValue(status);
     typeRange.setValue(invoicetype);  
     multiplierRange.setValue(multiplier);
     newinvnum.setValue(newnum);
-    newrow.setValue(newnum);
-    newname.setValue(prefix);
-   buildHistoricalLineItem()
+    newcanc.setValue(oldnum);
+}
+function cancelInvoice(){
+  var detailsheet = SpreadsheetApp.getActive()
+  var calc = detailsheet.getSheetByName('Calculations');
+  var history = detailsheet.getSheetByName('Historical Data');
+  var billinglog = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw');
+  var logsheet = billinglog.getSheetByName('Billing Log');
+  var newrow = logsheet.getRange(logsheet.getLastRow()+1,2,1,1);
+  var newname = logsheet.getRange(logsheet.getLastRow()+1,3,1,1);
+  var prefix = calc.getRange(29,1,1,1).getValue();
+  var newnum = calc.getRange(16,5,1,1).getValue();
+  var status = 'Cancelled';
+  var invnum = calc.getRange(9,2,1,1).getValue(); 
+  var rowFinder = history.createTextFinder(invnum);
+  var rowNum = rowFinder.findNext().getRow();
+  var newstatus = history.getRange(rowNum,6,1,1);
+  newrow.setValue(newnum);
+  newname.setValue(prefix);
+  newstatus.setValue(status);
+  buildHistoricalLineItem();
 }
 
 function savePDF( optSSId, optSheetId ) {
@@ -212,11 +223,18 @@ function savePDF( optSSId, optSheetId ) {
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; puz.7002@digi-bel.de', attachments:[blob.getAs(MimeType.PDF)]});  
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
   moveBillingLogLineItem()
+  var cancellationtest = calcsource.getRange(8,2,1,1).getValue();
+     if (cancellationtest == "Cancellation"){
+       cancelInvoice();
+     }
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
     ui.alert('Print invoice before closing. Please note that a copy of the email has been sent to both Digi-Bel and Salesforce.');
     MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com, puz.7002@digi-bel.de','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
     moveBillingLogLineItem()
+     if (cancellationtest == "Cancellation"){
+       cancelInvoice();
+     }
   // User cancels process
   } else if (result == ui.Button.CANCEL) {
     ui.alert('Process cancelled, the invoice has been created but not sent');
@@ -228,8 +246,19 @@ function savePDF( optSSId, optSheetId ) {
 function moveBillingLogLineItem() {
   var destinationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Incoming Line Items');
   var destinationRange = destinationSheet.getRange(destinationSheet.getLastRow()+1,1,1,15);
-  var billingLogLineItem = SpreadsheetApp.getActive().getSheetByName('Calculations').getRange(26,1,1,15).getValues();
+  var cancellationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Cancellations');
+  var cancellationRange = cancellationSheet.getRange(cancellationSheet.getLastRow()+1,1,1,15);
+  var calcsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
+  var billingLogLineItem = calcsheet.getRange(26,1,1,15).getValues();
+  var test = calcsheet.getRange(8,2,1,1).getValue();
+  if (test == 'Regular'){
       destinationRange.setValues(billingLogLineItem);
+  }
+  else if (test == 'Cancellation') {
+      cancellationRange.setValues(billingLogLineItem);
+      cancelInvoice();
+      resetSheet();
+  }
 }
 
 function importCustomerData() {
