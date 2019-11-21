@@ -430,13 +430,14 @@ function requirePassword(){
       var targetsheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI');
       var targettab = targetsheet.getSheetByName('Client Master List');
       var targettabdata = targettab.getDataRange();
-      var targetcompanyname = targettab.getRange(targettabdata.getLastRow()+1,2,1,1);
-      var targetclientnumber = targettab.getRange(targettabdata.getLastRow()+1,1,1,1);
-      var targetdocid = targettab.getRange(targettabdata.getLastRow()+1,6,1,1);
+      var newrow = targettabdata.getLastRow()+1;
+      var targetcompanyname = targettab.getRange(newrow,2,1,1);
+      var targetclientnumber = targettab.getRange(newrow,1,1,1);
+      var targetdocid = targettab.getRange(newrow,4,1,1);
       var commonname = tab.getRange(2,2,1,1).getValue();
       var urlformula = '=HYPERLINK(CONCATENATE("https://docs.google.com/spreadsheets/d/",RC[-1],"/edit#gid=712059032"),RC[-4])';
-      var targetcommonname = targettab.getRange(targettabdata.getLastRow()+1,3,1,1);
-      var targeturlformula = targettab.getRange(targettabdata.getLastRow()+1,7,1,1);
+      var targetcommonname = targettab.getRange(newrow,3,1,1);
+      var targeturlformula = targettab.getRange(newrow,5,1,1);
   
       targetcompanyname.setValue(companyname);
       targetclientnumber.setValue(clientnumber);
