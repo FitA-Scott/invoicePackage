@@ -435,7 +435,7 @@ function requirePassword(){
       var targetclientnumber = targettab.getRange(newrow,1,1,1);
       var targetdocid = targettab.getRange(newrow,4,1,1);
       var commonname = tab.getRange(2,2,1,1).getValue();
-      var urlformula = '=HYPERLINK(CONCATENATE("https://docs.google.com/spreadsheets/d/",RC[-1],"/edit#gid=712059032"),RC[-4])';
+      var urlformula = '=HYPERLINK(CONCATENATE("https://docs.google.com/spreadsheets/d/",RC[-1],"/edit#gid=712059032"),RC[-2])';
       var targetcommonname = targettab.getRange(newrow,3,1,1);
       var targeturlformula = targettab.getRange(newrow,5,1,1);
   
