@@ -291,7 +291,7 @@ function specialSalesData() {
   var detsheet = SpreadsheetApp.getActive().getSheetByName('Details');
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
   var currentmonth = calcsheet.getRange(6,5,1,1).getValue();
-  var datalocation = calcsheet.getRange(23,2,1,1).getValue();
+  var datalocation = detsheet.getRange(23,2,1,1).getValue();
   var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Purchases ' + currentmonth + '!A1:J")';
   var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Returns ' + currentmonth + '!A1:I")';
   var purchaseFormulaDest = itemsheet.getRange(1,1,1,1);
