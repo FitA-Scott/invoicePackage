@@ -490,7 +490,7 @@ function pullBillingInfo() {
   var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + retloc + '!A1:G")'; 
   var purchases = infosheet.getRange(1,1,1,1);
   var returns = infosheet.getRange(1,9,1,1);
-  var formula = '=IMPORTRANGE("1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE","List!A1:M")';
+  var formula = '=IMPORTRANGE("1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE","List!A1:N")';
   var range = itemssheet.getRange(1,1,1,1);
     range.setValue(formula);
     purchases.setValue(purformula);
@@ -514,8 +514,8 @@ function assembleLineItems(){
   var prefix = details.getRange(4,2,1,1).getValue();
   var prefixFinder = items.createTextFinder(prefix);
   var row = prefixFinder.findNext().getRow();
-  var lineItems = items.getRange(row,4,quantity,10).getValues();
-  var itemsRange = calculations.getRange(29,1,quantity,10);
+  var lineItems = items.getRange(row,4,quantity,11).getValues();
+  var itemsRange = calculations.getRange(29,1,quantity,11);
   itemsRange.setValues(lineItems);
   buildHistoricalLineItem();
 }
@@ -537,6 +537,10 @@ function buildHistoricalLineItem(){
   var calculations = sheet.getSheetByName('Calculations');
   var history = sheet.getSheetByName('Historical Data');
   var last = history.getLastRow()+1;
+  //Clean up previous Line Items
+  var rows = calculations.getRange(5,5,1,1).getValue();
+  var sortRange = calculations.getRange(29,1,rows,11);
+  sortRange.sort([11]);
   //Get values for Historical Line Item
   var number = details.getRange(5,2,1,1).getValue();
   var legalName = details.getRange(3,2,1,1).getValue();
