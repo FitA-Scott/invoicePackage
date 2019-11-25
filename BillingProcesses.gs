@@ -163,10 +163,10 @@ function cancelInvoice(){
 function savePDF( optSSId, optSheetId ) {
   var calculationSource = SpreadsheetApp.getActive().getSheetByName('Details');
   var invoiceSource = SpreadsheetApp.getActive().getSheetByName('Invoice');
-  var invoiceNumber = invoiceSource.getRange(8,7,1,1).getValue();
+  var invoiceNumber = invoiceSource.getRange(9,7,1,1).getValue();
   var accountNameText = calculationSource.getRange(3,2,1,1).getValue();
   var accountName = accountNameText.replace(" ","_",'g');
-  var servicePeriodText = invoiceSource.getRange(9,7,1,1).getValue();
+  var servicePeriodText = invoiceSource.getRange(10,7,1,1).getValue();
   var servicePeriod = servicePeriodText.replace(" ","_");
   var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
   var url = ss.getUrl().replace(/edit$/,'');
@@ -197,7 +197,7 @@ function savePDF( optSSId, optSheetId ) {
       }
     }
     var response = UrlFetchApp.fetch(url + url_ext, header);
-    var blob = response.getBlob().setName('FitAnalytics_' + invoiceNumber + '_' + accountName + '_' + servicePeriod + '.pdf');
+    var blob = response.getBlob().setName('Fit_Analytics_' + invoiceNumber + '_' + accountName + '_' + servicePeriod + '.pdf');
     folder.createFile(blob);
   }
     var result = ui.alert('Would you like to e-mail the invoice?', ui.ButtonSet.YES_NO_CANCEL);
@@ -291,7 +291,7 @@ function specialSalesData() {
   var detsheet = SpreadsheetApp.getActive().getSheetByName('Details');
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
   var currentmonth = calcsheet.getRange(6,5,1,1).getValue();
-  var datalocation = detsheet.getRange(23,2,1,1).getValue();
+  var datalocation = calcsheet.getRange(23,2,1,1).getValue();
   var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Purchases ' + currentmonth + '!A1:J")';
   var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Returns ' + currentmonth + '!A1:I")';
   var purchaseFormulaDest = itemsheet.getRange(1,1,1,1);
@@ -435,7 +435,7 @@ function requirePassword(){
       var targetclientnumber = targettab.getRange(newrow,1,1,1);
       var targetdocid = targettab.getRange(newrow,4,1,1);
       var commonname = tab.getRange(2,2,1,1).getValue();
-      var urlformula = '=HYPERLINK(CONCATENATE("https://docs.google.com/spreadsheets/d/",RC[-1],"/edit#gid=712059032"),RC[-2])';
+      var urlformula = '=HYPERLINK(CONCATENATE("https://docs.google.com/spreadsheets/d/",RC[-1],"/edit#gid=712059032"),RC[-4])';
       var targetcommonname = targettab.getRange(newrow,3,1,1);
       var targeturlformula = targettab.getRange(newrow,5,1,1);
   
