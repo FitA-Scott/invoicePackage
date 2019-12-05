@@ -49,8 +49,8 @@ function approvalProcess( optSSId, optSheetId ){
   var calcSheet = workingSheet.getSheetByName('Details');
   var invoiceSheet = workingSheet.getSheetByName('Invoice');
   var companyName = calcSheet.getRange(3,2,1,1).getValue();
-  var invoiceNumber = invoiceSheet.getRange(8,7,1,1).getValue();
-  var invoicePeriod = invoiceSheet.getRange(9,7,1,1).getValue();
+  var invoiceNumber = invoiceSheet.getRange(9,7,1,1).getValue();
+  var invoicePeriod = invoiceSheet.getRange(10,7,1,1).getValue();
   var billingDocId = workingSheet.getId();
   var accountNumber = calcSheet.getRange(5,2,1,1).getValue();
   var ui = SpreadsheetApp.getUi();
