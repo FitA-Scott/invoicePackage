@@ -214,7 +214,7 @@ function savePDF( optSSId, optSheetId ) {
   var bccaddress = calcsource.getRange(17,2,1,1).getValues();
   var deliveryaddresses = detailsource.getRange(17,2,1,1).getValues();
   var emailsubject = calcsource.getRange(22,2,1,1).getValues();
-  var sheetbodytext = detailsource.getRange(23,2,1,1).getValues();
+  var sheetbodytext = calcsource.getRange(23,2,1,1).getValues();
   var emailtext = String(sheetbodytext[0]);
   var sfdcid= detailsource.getRange(21,2,1,1).getValue();
   var reviewTest = calcsource.getRange(2,2,1,1).getValue();
