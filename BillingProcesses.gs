@@ -6,11 +6,16 @@
 function onOpen(e) {
     ui.createMenu('Billing')
       .addItem('Show Navigation Panel', 'showSidebar')
-      .addItem('Refresh Data', 'importCustomerData')
-      .addItem('Refresh Line Items','assembleLineItems')
-      .addItem('Send Proof for Approval','approvalProcess')
-      .addItem('Open Contracts Folder','viewContract')
-      .addItem('Open Invoices Folder','viewInvoices')
+      .addSeparator()
+      .addSubMenu(ui.createMenu('Refresh Data')
+         .addItem('Refresh Client Data', 'importCustomerData')
+         .addItem('Refresh Line Items','assembleLineItems'))
+      .addSubMenu(ui.createMenu('Create')            
+         .addItem('Proof for Approval','approvalProcess')
+         .addItem('Final Invoice','routeProcess'))
+      .addSubMenu(ui.createMenu('Aditional Info')           
+         .addItem('Open Contracts Folder','viewContract')
+         .addItem('Open Invoices Folder','viewInvoices'))
       .addToUi();     
       searchNumber();
       importCustomerData();
