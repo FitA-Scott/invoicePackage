@@ -554,13 +554,17 @@ function buildHistoricalLineItem(){
   var currency = calculations.getRange(29,5,1,1).getValue();
   var cycle = calculations.getRange(15,5,1,1).getValue();
   var invoiceNum = calculations.getRange(16,5,1,1).getValue();
-  var purCount = calculations.getRange(9,5,1,1).getValue();
-  var purAmount = calculations.getRange(10,5,1,1).getValue();
-  var retCount = calculations.getRange(11,5,1,1).getValue();
-  var retAmount = calculations.getRange(12,5,1,1).getValue();
+  var purCount = calculations.getRange(9,6,1,1).getValue();
+  var purAmount = calculations.getRange(10,6,1,1).getValue();
+  var retCount = calculations.getRange(11,6,1,1).getValue();
+  var retAmount = calculations.getRange(12,6,1,1).getValue();
   var review = calculations.getRange(2,2,1,1).getValue();
   const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
-  var month = monthNames[today.getMonth()-1]
+  var monthCalc = monthNames[today.getMonth()-1]
+     if (monthCalc == null){var month = "December";
+                           }
+        else {month = monthCalc;
+             }
   //Get ranges for new Historical Line Item
   var setAcctNumber = history.getRange(last,1,1,1);
   var setAcctName = history.getRange(last,2,1,1);
