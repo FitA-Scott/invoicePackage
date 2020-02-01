@@ -491,8 +491,8 @@ function pullBillingInfo() {
   var itemssheet = SpreadsheetApp.getActive().getSheetByName('Line Items');
   var purloc = detailsheet.getRange(7,5,1,1).getValue();
   var retloc = detailsheet.getRange(8,5,1,1).getValue();
-  var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + purloc + '!A1:G")';
-  var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + retloc + '!A1:G")'; 
+  var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1rr5vp4EfKgo6U3lZyE-idOIIi_xrYq95LyZkuxKDtVQ/","' + purloc + '!A1:G")';
+  var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1rr5vp4EfKgo6U3lZyE-idOIIi_xrYq95LyZkuxKDtVQ/","' + retloc + '!A1:G")'; 
   var purchases = infosheet.getRange(1,1,1,1);
   var returns = infosheet.getRange(1,9,1,1);
   var formula = '=IMPORTRANGE("1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE","List!A1:N")';
