@@ -8,26 +8,17 @@
     <div class="container">
     <br>
     <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Review Contract" onclick="openContract()"/>
-    <p><sub>Open contracts folder.</sub></p>
     <br>
     <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Review Invoices" onclick="openInvoice()"/>
-    <p><sub>Open invoices folder.</sub></p>
     <br>
     <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Refresh Sheet" onclick="refreshData()"/>
-    <p><sub>Refresh customer data from Salesforce.</sub></p>
     <br>    
     <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Reset Invoice" onclick="resetValues()"/>
-    <p><sub>Reset invoice to default values.</sub></p>
     <br>    
     <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="Cancellation Note" onclick="cancellationNote()"/>
-    <p><sub>Create cancellation from historical invoice.</sub></p>
-    <br>
-    <input type="button" class="btn btn-secondary btn-md btn-block" class="rounded" value="One-Time Invoice" onclick="oneOffInvoice()"/>
-    <p><sub>Create a one-time invoice.</sub></p>
     <br>
     <input type="button" class="btn btn-dark btn-md btn-block" class="rounded" value="Create Invoice" onclick="createPDF()" />
-    <p><sub>Create invoice with the current information.</sub></p>
-    <br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <p><button type="button" class="btn btn-link" onclick= "adminPanel()">Administrative Functions</button> 
    </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -55,10 +46,6 @@
     </script>
     <script> function cancellationNote(){
       google.script.run.createCancellation();
-    }
-    </script>
-    <script> function oneOffInvoice(){
-      google.script.run.createOneOff();
     }
     </script>
     <script> function adminPanel(){
