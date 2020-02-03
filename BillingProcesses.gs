@@ -558,7 +558,7 @@ function buildHistoricalLineItem(){
   var purAmount = calculations.getRange(10,6,1,1).getValue();
   var retCount = calculations.getRange(11,6,1,1).getValue();
   var retAmount = calculations.getRange(12,6,1,1).getValue();
-  var review = calculations.getRange(2,2,1,1).getValue();
+  var review = calculations.getRange(8,6,1,1).getValue();
   const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
   var monthCalc = monthNames[today.getMonth()-1]
      if (monthCalc == null){var month = "December";
