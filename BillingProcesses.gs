@@ -227,19 +227,12 @@ function savePDF( optSSId, optSheetId ) {
   var emailfooter = ('<div><br><br><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; puz.7002@digi-bel.de', attachments:[blob.getAs(MimeType.PDF)]});  
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
-  moveBillingLogLineItem()
-  var cancellationtest = calcsource.getRange(8,2,1,1).getValue();
-     if (cancellationtest == "Cancellation"){
-       cancelInvoice();
-     }
+  moveBillingLogLineItem();
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
     ui.alert('Print invoice before closing. Please note that a copy of the email has been sent to both Digi-Bel and Salesforce.');
     MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com, puz.7002@digi-bel.de','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
     moveBillingLogLineItem()
-     if (cancellationtest == "Cancellation"){
-       cancelInvoice();
-     }
   // User cancels process
   } else if (result == ui.Button.CANCEL) {
     ui.alert('Process cancelled, the invoice has been created but not sent');
@@ -251,19 +244,9 @@ function savePDF( optSSId, optSheetId ) {
 function moveBillingLogLineItem() {
   var destinationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Incoming Line Items');
   var destinationRange = destinationSheet.getRange(destinationSheet.getLastRow()+1,1,1,15);
-  var cancellationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Cancellations');
-  var cancellationRange = cancellationSheet.getRange(cancellationSheet.getLastRow()+1,1,1,15);
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
   var billingLogLineItem = calcsheet.getRange(26,1,1,15).getValues();
-  var test = calcsheet.getRange(8,2,1,1).getValue();
-  if (test == 'Regular'){
       destinationRange.setValues(billingLogLineItem);
-  }
-  else if (test == 'Cancellation') {
-      cancellationRange.setValues(billingLogLineItem);
-      cancelInvoice();
-      resetSheet();
-  }
 }
 
 function importCustomerData() {
