@@ -304,8 +304,6 @@ function refreshCustomerData() {
   var destination = current.getSheetByName('Details');
   var refreshDate = new Date();
   var newRefreshDate = inbound.getRange(inbound.getLastRow(),21,1,1);
-  var userName = Session.getEffectiveUser();
-  var newUserName = inbound.getRange(inbound.getLastRow(),22,1,1);
   //New values imported form Salesforce report
   var commonName = inbound.getRange(inbound.getLastRow(),3,1,1).getValue();
   var prefix = inbound.getRange(inbound.getLastRow(),4,1,1).getValue();
@@ -363,7 +361,6 @@ function refreshCustomerData() {
   newsalesforceId.setValue(salesforceId);
   newContractFolder.setValue(contractFolder);  
   newRefreshDate.setValue(refreshDate);
-  newUserName.setValue(userName);  
   if (billingContacts == '') {
     newBillingContacts.setValue('Accounts Payable');
     }
