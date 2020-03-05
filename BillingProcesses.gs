@@ -275,27 +275,21 @@ function searchNumber() {
   }
 
 function specialSalesData() {
-  var itemsheet = SpreadsheetApp.getActive().getSheetByName('Itemised Info');
+  var itemsheet = SpreadsheetApp.getActive().getSheetByName('Special Data');
   var detsheet = SpreadsheetApp.getActive().getSheetByName('Details');
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
-  var currentmonth = calcsheet.getRange(6,5,1,1).getValue();
-  var datalocation = calcsheet.getRange(23,2,1,1).getValue();
-  var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Purchases ' + currentmonth + '!A1:J")';
-  var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Returns ' + currentmonth + '!A1:I")';
+  var test = calcsheet.getRange(18,2,1,1).getValue();
+  var currentpurchases = calcsheet.getRange(7,5,1,1).getValue();
+  var currentreturns = calcsheet.getRange(8,5,1,1).getValue();
+  var datalocation = detsheet.getRange(23,2,1,1).getValue();
+  var purchaseFormula = '=IMPORTRANGE("' + datalocation + '","' + currentpurchases + '!A1:H")';
+  var returnFormula = '=IMPORTRANGE("' + datalocation + '","' + currentreturns + '!A1:H")';
   var purchaseFormulaDest = itemsheet.getRange(1,1,1,1);
-  var returnFormulaDest = itemsheet.getRange(1,12,1,1);
+  var returnFormulaDest = itemsheet.getRange(1,11,1,1);
+  if (test == "yes"){
     purchaseFormulaDest.setValue(purchaseFormula);
-    returnFormulaDest.setValue(returnFormula);
-    setSpecialData();  
-}
-
-function setSpecialData(){
-  var datasheet = SpreadsheetApp.getActive().getSheetByName('Itemised Info');
-  var data = datasheet.getRange(1,1,datasheet.getLastRow(),datasheet.getLastColumn());
-  var range = data.getA1Notation();
-  var copy = data.getValues();
-      datasheet.clear({contentsOnly: true});
-      datasheet.getRange(range).setValues(copy);
+    returnFormulaDest.setValue(returnFormula);  
+  }
 }
 
 function refreshCustomerData() {
