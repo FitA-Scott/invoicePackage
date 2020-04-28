@@ -526,9 +526,11 @@ function buildHistoricalLineItem(){
   var number = details.getRange(5,2,1,1).getValue();
   var legalName = details.getRange(3,2,1,1).getValue();
   var prefix = details.getRange(4,2,1,1).getValue();
-  var service = calculations.getRange(29,2,1,1).getValue();
+  var serviceMonth = calculations.getRange(15,5,1,1).getValue();
+  var serviceYear = calculations.getRange(15,6,1,1).getValue();
+  var servicePeriod = (serviceMonth+' '+serviceYear);
   var currency = calculations.getRange(29,5,1,1).getValue();
-  var cycle = calculations.getRange(15,5,1,1).getValue();
+  var service = calculations.getRange(29,2,1,1).getValue();
   var invoiceNum = calculations.getRange(16,5,1,1).getValue();
   var purCount = calculations.getRange(9,6,1,1).getValue();
   var purAmount = calculations.getRange(10,6,1,1).getValue();
@@ -559,13 +561,13 @@ function buildHistoricalLineItem(){
   var setyear = history.getRange(last,15,1,1);
   //Set Historical Line Item
   var test = history.getRange(history.getLastRow(),6,1,1).getValue();
-  if (test != cycle){
+  if (test != servicePeriod){
   setAcctNumber.setValue(number);
   setAcctName.setValue(legalName);
   setPrefix.setValue(prefix);
   setItemName.setValue(service);
   setCurrency.setValue(currency);
-  setCycle.setValue(cycle);
+  setCycle.setValue(servicePeriod);
   setNumber.setValue(invoiceNum);
   setPurCount.setValue(purCount);
   setPurAmount.setValue(purAmount);
