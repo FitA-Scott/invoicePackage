@@ -20,6 +20,7 @@ function onOpen(e) {
       searchNumber();
       importCustomerData();
       pullBillingInfo();
+      cleanUpLineItems()
   var testRange = active.getSheetByName('Details').getRange(23,2,1,1).getValue();
     if ( testRange != '') {
       specialSalesData();
@@ -476,7 +477,6 @@ function pullBillingInfo() {
     range.setValue(formula);
     purchases.setValue(purformula);
     returns.setValue(retformula);
-    assembleLineItems();
 }
 
 function createOneOff(){
@@ -586,4 +586,12 @@ function buildHistoricalLineItem(){
     oldtime.setValue(newvalue);
     oldfeedback.setValue(newvalue);
   }
+}
+
+function cleanUpLineItems() {
+  var calc = SpreadsheetApp.getActive().getSheetByName('Calculations');
+  var numberOfRows = calc.getRange(5,5,1,1).getValue();
+  var itemRange = calc.getRange(29,1,numberOfRows,11);
+  itemRange.clear();
+  assembleLineItems();
 }
