@@ -1,3 +1,9 @@
+//Fit Analytics GmbH Billing Package
+//Version 2.0.4
+//Kyle Phillips 2020
+
+
+
 // Global Variables
   var ui = SpreadsheetApp.getUi();
   var active = SpreadsheetApp.getActiveSpreadsheet();
