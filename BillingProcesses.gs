@@ -1,3 +1,9 @@
+//Fit Analytics GmbH Billing Package
+//Version 2.0.5
+//Kyle Phillips 2020
+
+
+
 // Global Variables
   var ui = SpreadsheetApp.getUi();
   var active = SpreadsheetApp.getActiveSpreadsheet();
@@ -16,10 +22,14 @@ function onOpen(e) {
       .addSubMenu(ui.createMenu('Aditional Info')           
          .addItem('Open Contracts Folder','viewContract')
          .addItem('Open Invoices Folder','viewInvoices'))
+      .addSubMenu(ui.createMenu('Statements')           
+         .addItem('Update Statement Items','updateStatement')
+         .addItem('Create Statement','createStatement'))
       .addToUi();     
       searchNumber();
       importCustomerData();
       pullBillingInfo();
+      cleanUpLineItems()
   var testRange = active.getSheetByName('Details').getRange(23,2,1,1).getValue();
     if ( testRange != '') {
       specialSalesData();
@@ -73,7 +83,7 @@ function approvalProcess( optSSId, optSheetId ){
   var url = ss.getUrl().replace(/edit$/,'');
   var parents = DriveApp.getFileById(ss.getId()).getParents();
   if (parents.hasNext()) {
-    var folder = parents.next();
+    var folder = DriveApp.getFolderById('11F6u9Wk1AaGG1tCAEFH9120EWbWBmHuH');
   }
   else {
     folder = DriveApp.getRootFolder();
@@ -227,19 +237,12 @@ function savePDF( optSSId, optSheetId ) {
   var emailfooter = ('<div><br><br><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; puz.7002@digi-bel.de', attachments:[blob.getAs(MimeType.PDF)]});  
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
-  moveBillingLogLineItem()
-  var cancellationtest = calcsource.getRange(8,2,1,1).getValue();
-     if (cancellationtest == "Cancellation"){
-       cancelInvoice();
-     }
+  moveBillingLogLineItem();
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
     ui.alert('Print invoice before closing. Please note that a copy of the email has been sent to both Digi-Bel and Salesforce.');
     MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com, puz.7002@digi-bel.de','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
     moveBillingLogLineItem()
-     if (cancellationtest == "Cancellation"){
-       cancelInvoice();
-     }
   // User cancels process
   } else if (result == ui.Button.CANCEL) {
     ui.alert('Process cancelled, the invoice has been created but not sent');
@@ -251,19 +254,9 @@ function savePDF( optSSId, optSheetId ) {
 function moveBillingLogLineItem() {
   var destinationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Incoming Line Items');
   var destinationRange = destinationSheet.getRange(destinationSheet.getLastRow()+1,1,1,15);
-  var cancellationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Cancellations');
-  var cancellationRange = cancellationSheet.getRange(cancellationSheet.getLastRow()+1,1,1,15);
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
   var billingLogLineItem = calcsheet.getRange(26,1,1,15).getValues();
-  var test = calcsheet.getRange(8,2,1,1).getValue();
-  if (test == 'Regular'){
       destinationRange.setValues(billingLogLineItem);
-  }
-  else if (test == 'Cancellation') {
-      cancellationRange.setValues(billingLogLineItem);
-      cancelInvoice();
-      resetSheet();
-  }
 }
 
 function importCustomerData() {
@@ -292,27 +285,21 @@ function searchNumber() {
   }
 
 function specialSalesData() {
-  var itemsheet = SpreadsheetApp.getActive().getSheetByName('Itemised Info');
+  var itemsheet = SpreadsheetApp.getActive().getSheetByName('Special Data');
   var detsheet = SpreadsheetApp.getActive().getSheetByName('Details');
   var calcsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
-  var currentmonth = calcsheet.getRange(6,5,1,1).getValue();
-  var datalocation = calcsheet.getRange(23,2,1,1).getValue();
-  var purchaseFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Purchases ' + currentmonth + '!A1:J")';
-  var returnFormula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/' + datalocation + '", "Returns ' + currentmonth + '!A1:I")';
+  var test = calcsheet.getRange(18,2,1,1).getValue();
+  var currentpurchases = calcsheet.getRange(7,5,1,1).getValue();
+  var currentreturns = calcsheet.getRange(8,5,1,1).getValue();
+  var datalocation = detsheet.getRange(23,2,1,1).getValue();
+  var purchaseFormula = '=IMPORTRANGE("' + datalocation + '","' + currentpurchases + '!A1:H")';
+  var returnFormula = '=IMPORTRANGE("' + datalocation + '","' + currentreturns + '!A1:H")';
   var purchaseFormulaDest = itemsheet.getRange(1,1,1,1);
-  var returnFormulaDest = itemsheet.getRange(1,12,1,1);
+  var returnFormulaDest = itemsheet.getRange(1,11,1,1);
+  if (test == "yes"){
     purchaseFormulaDest.setValue(purchaseFormula);
-    returnFormulaDest.setValue(returnFormula);
-    setSpecialData();  
-}
-
-function setSpecialData(){
-  var datasheet = SpreadsheetApp.getActive().getSheetByName('Itemised Info');
-  var data = datasheet.getRange(1,1,datasheet.getLastRow(),datasheet.getLastColumn());
-  var range = data.getA1Notation();
-  var copy = data.getValues();
-      datasheet.clear({contentsOnly: true});
-      datasheet.getRange(range).setValues(copy);
+    returnFormulaDest.setValue(returnFormula);  
+  }
 }
 
 function refreshCustomerData() {
@@ -321,8 +308,6 @@ function refreshCustomerData() {
   var destination = current.getSheetByName('Details');
   var refreshDate = new Date();
   var newRefreshDate = inbound.getRange(inbound.getLastRow(),21,1,1);
-  var userName = Session.getEffectiveUser();
-  var newUserName = inbound.getRange(inbound.getLastRow(),22,1,1);
   //New values imported form Salesforce report
   var commonName = inbound.getRange(inbound.getLastRow(),3,1,1).getValue();
   var prefix = inbound.getRange(inbound.getLastRow(),4,1,1).getValue();
@@ -380,7 +365,6 @@ function refreshCustomerData() {
   newsalesforceId.setValue(salesforceId);
   newContractFolder.setValue(contractFolder);  
   newRefreshDate.setValue(refreshDate);
-  newUserName.setValue(userName);  
   if (billingContacts == '') {
     newBillingContacts.setValue('Accounts Payable');
     }
@@ -430,21 +414,23 @@ function requirePassword(){
       var sheet = SpreadsheetApp.getActive();
       var tab = sheet.getSheetByName('Details');
       var newdocid = sheet.getId();
-      var companyname = tab.getRange(2,2,1,1).getValue();
+      var companylegalname = tab.getRange(3,2,1,1).getValue();
+      var commonname = tab.getRange(2,2,1,1).getValue();
+      var prefix =tab.getRange(4,2,1,1).getValue();
       var clientnumber = tab.getRange(5,2,1,1).getValue();
       var targetsheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI');
       var targettab = targetsheet.getSheetByName('Client Master List');
       var targettabdata = targettab.getDataRange();
       var newrow = targettabdata.getLastRow()+1;
-      var targetcompanyname = targettab.getRange(newrow,2,1,1);
+      var targetcompanylegalname = targettab.getRange(newrow,2,1,1);
       var targetclientnumber = targettab.getRange(newrow,1,1,1);
-      var targetdocid = targettab.getRange(newrow,4,1,1);
-      var commonname = tab.getRange(2,2,1,1).getValue();
+      var targetdocid = targettab.getRange(newrow,5,1,1);
+      var targetprefix = targettab.getRange(newrow,4,1,1);
       var urlformula = '=HYPERLINK(CONCATENATE("https://docs.google.com/spreadsheets/d/",RC[-1],"/edit#gid=712059032"),RC[-3])';
       var targetcommonname = targettab.getRange(newrow,3,1,1);
-      var targeturlformula = targettab.getRange(newrow,5,1,1);
+      var targeturlformula = targettab.getRange(newrow,6,1,1);
   
-      targetcompanyname.setValue(companyname);
+      targetcompanylegalname.setValue(companylegalname);
       targetclientnumber.setValue(clientnumber);
       targetdocid.setValue(newdocid);
       targetcommonname.setValue(commonname);
@@ -491,8 +477,8 @@ function pullBillingInfo() {
   var itemssheet = SpreadsheetApp.getActive().getSheetByName('Line Items');
   var purloc = detailsheet.getRange(7,5,1,1).getValue();
   var retloc = detailsheet.getRange(8,5,1,1).getValue();
-  var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + purloc + '!A1:G")';
-  var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1n0oFePjP3SGpE9fK2j_IptZ93RySbGbZB12T7wz9Bhg/","' + retloc + '!A1:G")'; 
+  var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1rr5vp4EfKgo6U3lZyE-idOIIi_xrYq95LyZkuxKDtVQ/","' + purloc + '!A1:G")';
+  var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1rr5vp4EfKgo6U3lZyE-idOIIi_xrYq95LyZkuxKDtVQ/","' + retloc + '!A1:G")'; 
   var purchases = infosheet.getRange(1,1,1,1);
   var returns = infosheet.getRange(1,9,1,1);
   var formula = '=IMPORTRANGE("1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE","List!A1:N")';
@@ -500,7 +486,6 @@ function pullBillingInfo() {
     range.setValue(formula);
     purchases.setValue(purformula);
     returns.setValue(retformula);
-    assembleLineItems();
 }
 
 function createOneOff(){
@@ -512,7 +497,8 @@ function createOneOff(){
 
 function assembleLineItems(){
   var sheet = SpreadsheetApp.getActive();
-  var items = sheet.getSheetByName('Line Items');
+  var list = SpreadsheetApp.openById('1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE');
+  var items = list.getSheetByName('List');
   var details = sheet.getSheetByName('Details');
   var calculations = sheet.getSheetByName('Calculations');  
   var quantity = calculations.getRange(5,5,1,1).getValue();
@@ -550,15 +536,18 @@ function buildHistoricalLineItem(){
   var number = details.getRange(5,2,1,1).getValue();
   var legalName = details.getRange(3,2,1,1).getValue();
   var prefix = details.getRange(4,2,1,1).getValue();
-  var service = calculations.getRange(29,2,1,1).getValue();
+  var serviceMonth = calculations.getRange(15,5,1,1).getValue();
+  var serviceYear = calculations.getRange(15,6,1,1).getValue();
+  var servicePeriod = (serviceMonth+' '+serviceYear);
   var currency = calculations.getRange(29,5,1,1).getValue();
-  var cycle = calculations.getRange(15,5,1,1).getValue();
+  var service = calculations.getRange(29,2,1,1).getValue();
   var invoiceNum = calculations.getRange(16,5,1,1).getValue();
   var purCount = calculations.getRange(9,6,1,1).getValue();
   var purAmount = calculations.getRange(10,6,1,1).getValue();
   var retCount = calculations.getRange(11,6,1,1).getValue();
   var retAmount = calculations.getRange(12,6,1,1).getValue();
-  var review = calculations.getRange(2,2,1,1).getValue();
+  var review = calculations.getRange(8,6,1,1).getValue();
+  var year = calculations.getRange(15,6,1,1).getValue();
   const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
   var monthCalc = monthNames[today.getMonth()-1]
      if (monthCalc == null){var month = "December";
@@ -579,15 +568,16 @@ function buildHistoricalLineItem(){
   var setRetAmount = history.getRange(last,12,1,1);
   var setReview = history.getRange(last,13,1,1);
   var setMonth = history.getRange(last,14,1,1);
+  var setyear = history.getRange(last,15,1,1);
   //Set Historical Line Item
   var test = history.getRange(history.getLastRow(),6,1,1).getValue();
-  if (test != cycle){
+  if (test != servicePeriod){
   setAcctNumber.setValue(number);
   setAcctName.setValue(legalName);
   setPrefix.setValue(prefix);
   setItemName.setValue(service);
   setCurrency.setValue(currency);
-  setCycle.setValue(cycle);
+  setCycle.setValue(servicePeriod);
   setNumber.setValue(invoiceNum);
   setPurCount.setValue(purCount);
   setPurAmount.setValue(purAmount);
@@ -595,6 +585,7 @@ function buildHistoricalLineItem(){
   setRetAmount.setValue(retAmount);
   setReview.setValue(review);
   setMonth.setValue(month);
+  setyear.setValue(year);  
     var oldapproval = calculations.getRange(4,2,1,1);
     var oldapprover = calculations.getRange(5,2,1,1);
     var oldtime = calculations.getRange(6,2,1,1);
@@ -605,4 +596,98 @@ function buildHistoricalLineItem(){
     oldtime.setValue(newvalue);
     oldfeedback.setValue(newvalue);
   }
+}
+
+function cleanUpLineItems() {
+  var calc = SpreadsheetApp.getActive().getSheetByName('Calculations');
+  var numberOfRows = calc.getRange(5,5,1,1).getValue();
+  var itemRange = calc.getRange(29,1,numberOfRows,11);
+  itemRange.clear();
+  assembleLineItems();
+}
+
+function createStatement( optSSId, optSheetId ) {
+  var detailSource = SpreadsheetApp.getActive().getSheetByName('Details');
+  var calcSource = SpreadsheetApp.getActive().getSheetByName('Calculations');
+  var statementSource = SpreadsheetApp.getActive().getSheetByName('Statement');
+  var accountNameText = detailSource.getRange(3,2,1,1).getValue();
+  var accountName = accountNameText.replace(" ","_",'g');
+  var servicePeriodText = calcSource.getRange(18,2,1,1).getValue();
+  var servicePeriod = servicePeriodText.replace(" ","_");
+  var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
+  var url = ss.getUrl().replace(/edit$/,'');
+  var parents = DriveApp.getFileById(ss.getId()).getParents();
+  var statementID = statementSource.getSheetId();
+  if (parents.hasNext()) {
+    var folder = parents.next();
+  }
+  else {
+    folder = DriveApp.getRootFolder();
+  }
+  var sheets = ss.getSheets();
+  var slice = sheets.slice(0,1);
+  for (var i=0; i<slice.length; i++) {
+    var sheet = slice[i];
+    if (optSheetId && optSheetId !== sheet.getSheetId() )continue; 
+    var url_ext = 'export?exportFormat=pdf&format=pdf'
+        + '&gid=' + statementID
+        // Optional for PDF
+        + '&size=A4'
+        + '&portrait=true'
+        + '&fitw=true'
+        + '&sheetnames=false&printtitle=false&pagenumbers=false'
+        + '&gridlines=false'
+        + '&fzr=false';
+    var header = {
+      headers: {
+        'Authorization': 'Bearer ' +  ScriptApp.getOAuthToken()
+      }
+    }
+    var response = UrlFetchApp.fetch(url + url_ext, header);
+    var statementBlob = response.getBlob().setName('Fit_Analytics_' + accountName + '_' + servicePeriod + '.pdf');
+    folder.createFile(statementBlob);
+  }
+    var result = ui.alert('Would you like to e-mail the statement?', ui.ButtonSet.YES_NO_CANCEL);
+  // Process user response.
+  if (result == ui.Button.YES) {
+    ui.alert('An e-mail draft has been created, please proofread and send.');
+  var infosheet = SpreadsheetApp.getActive();
+  var infosource = infosheet.getSheetByName('Invoice');
+  var detailsource = infosheet.getSheetByName('Details');
+  var calcsource = infosheet.getSheetByName('Calculations');  
+  var companyname = detailsource.getRange(3,2,1,1).getValues();
+  var statementdate = infosource.getRange(18,2,1,1).getValue();
+  var bccaddress = calcsource.getRange(17,2,1,1).getValues();
+  var addressees = detailsource.getRange(2,16,1,1).getValue();
+  var deliveryaddresses = detailsource.getRange(17,2,1,1).getValues();
+  var emailsubject = '[Fit Analytics] Statement of Account for ' + companyname + ' as of ' + statementdate;
+  var emailtext = 'Dear ' + addressees + '<br><br>Please find attached the statement of account for ' + companyname + ' as of ' + statementdate + '.<br><br><br>Please contact us if you have any questions.' ;
+  var sfdcid= detailsource.getRange(21,2,1,1).getValue();
+  var reviewTest = calcsource.getRange(2,2,1,1).getValue();
+  var approvalTest = calcsource.getRange(4,2,1,1).getValue();
+  var emailfooter = ('<div><br><br><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
+  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com', attachments:[statementBlob.getAs(MimeType.PDF)]});  
+  MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Statement of Account] for ' + companyname + 'as of ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
+  moveBillingLogLineItem();
+  // Process alternate user response  
+  } else if (result == ui.Button.NO) {
+    ui.alert('Print statement before closing. Please note that a copy of the email has been logged in Salesforce.');
+    MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
+    moveBillingLogLineItem()
+  // User cancels process
+  } else if (result == ui.Button.CANCEL) {
+    ui.alert('Process cancelled, the statement has been created but not sent');
+  // User closes wndow with no response
+  } else if (result == ui.Button.CLOSE) {
+    ui.alert('Process cancelled, the statement has been created but not sent');
+  }
+}
+
+function updateStatement() {
+  var sheet = SpreadsheetApp.getActive();
+  var ui = SpreadsheetApp.getUi();
+  var statement = sheet.getSheetByName('Statement');
+  var log = sheet.getSheetByName('Statement Items');
+  var message = 'Under Construction';
+  ui.alert(message);
 }
