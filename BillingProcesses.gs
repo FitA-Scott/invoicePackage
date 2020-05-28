@@ -169,10 +169,10 @@ function cancelInvoice(){
 function savePDF( optSSId, optSheetId ) {
   var calculationSource = SpreadsheetApp.getActive().getSheetByName('Details');
   var invoiceSource = SpreadsheetApp.getActive().getSheetByName('Invoice');
-  var invoiceNumber = invoiceSource.getRange(9,7,1,1).getValue();
+  var invoiceNumber = invoiceSource.getRange(10,7,1,1).getValue();
   var accountNameText = calculationSource.getRange(3,2,1,1).getValue();
   var accountName = accountNameText.replace(" ","_",'g');
-  var servicePeriodText = invoiceSource.getRange(10,7,1,1).getValue();
+  var servicePeriodText = invoiceSource.getRange(11,7,1,1).getValue();
   var servicePeriod = servicePeriodText.replace(" ","_");
   var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
   var url = ss.getUrl().replace(/edit$/,'');
