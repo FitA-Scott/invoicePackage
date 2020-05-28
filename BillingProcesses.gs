@@ -1,3 +1,8 @@
+//Fit Analytics GmbH Billing Package
+//Version 2.1.1
+//Kyle Phillips 2020
+
+
 // Global Variables
   var ui = SpreadsheetApp.getUi();
   var active = SpreadsheetApp.getActiveSpreadsheet();
@@ -16,6 +21,9 @@ function onOpen(e) {
       .addSubMenu(ui.createMenu('Aditional Info')           
          .addItem('Open Contracts Folder','viewContract')
          .addItem('Open Invoices Folder','viewInvoices'))
+      .addSubMenu(ui.createMenu('Statements')           
+         .addItem('Update Statement Items','updateStatement')
+         .addItem('Create Statement','createStatement'))
       .addToUi();     
       searchNumber();
       importCustomerData();
@@ -488,7 +496,8 @@ function createOneOff(){
 
 function assembleLineItems(){
   var sheet = SpreadsheetApp.getActive();
-  var items = sheet.getSheetByName('Line Items');
+  var list = SpreadsheetApp.openById('1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE');
+  var items = list.getSheetByName('List');
   var details = sheet.getSheetByName('Details');
   var calculations = sheet.getSheetByName('Calculations');  
   var quantity = calculations.getRange(5,5,1,1).getValue();
@@ -594,4 +603,90 @@ function cleanUpLineItems() {
   var itemRange = calc.getRange(29,1,numberOfRows,11);
   itemRange.clear();
   assembleLineItems();
+}
+
+function createStatement( optSSId, optSheetId ) {
+  var detailSource = SpreadsheetApp.getActive().getSheetByName('Details');
+  var calcSource = SpreadsheetApp.getActive().getSheetByName('Calculations');
+  var statementSource = SpreadsheetApp.getActive().getSheetByName('Statement');
+  var accountNameText = detailSource.getRange(3,2,1,1).getValue();
+  var accountName = accountNameText.replace(" ","_",'g');
+  var servicePeriodText = statementSource.getRange(8,8,1,1).getValue();
+  var servicePeriod = servicePeriodText.replace(" ","_");
+  var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
+  var url = ss.getUrl().replace(/edit$/,'');
+  var parents = DriveApp.getFileById(ss.getId()).getParents();
+  var statementID = statementSource.getSheetId();
+  if (parents.hasNext()) {
+    var folder = parents.next();
+  }
+  else {
+    folder = DriveApp.getRootFolder();
+  }
+  var sheets = ss.getSheets();
+  var slice = sheets.slice(0,1);
+  for (var i=0; i<slice.length; i++) {
+    var sheet = slice[i];
+    if (optSheetId && optSheetId !== sheet.getSheetId() )continue; 
+    var url_ext = 'export?exportFormat=pdf&format=pdf'
+        + '&gid=' + statementID
+        // Optional for PDF
+        + '&size=A4'
+        + '&portrait=true'
+        + '&fitw=true'
+        + '&sheetnames=false&printtitle=false&pagenumbers=false'
+        + '&gridlines=false'
+        + '&fzr=false';
+    var header = {
+      headers: {
+        'Authorization': 'Bearer ' +  ScriptApp.getOAuthToken()
+      }
+    }
+    var response = UrlFetchApp.fetch(url + url_ext, header);
+    var statementBlob = response.getBlob().setName('Fit_Analytics_' + accountName + '_' + servicePeriod + 'Statement_of_Account' + '.pdf');
+    folder.createFile(statementBlob);
+  }
+    var result = ui.alert('Would you like to e-mail the statement?', ui.ButtonSet.YES_NO_CANCEL);
+  // Process user response.
+  if (result == ui.Button.YES) {
+    ui.alert('An e-mail draft has been created, please proofread and send.');
+  var infosheet = SpreadsheetApp.getActive();
+  var infosource = infosheet.getSheetByName('Invoice');
+  var detailsource = infosheet.getSheetByName('Details');
+  var calcsource = infosheet.getSheetByName('Calculations');  
+  var companyname = detailsource.getRange(3,2,1,1).getValues();
+  var statementdate = infosource.getRange(18,2,1,1).getValue();
+  var bccaddress = calcsource.getRange(17,2,1,1).getValues();
+  var addressees = detailsource.getRange(2,16,1,1).getValue();
+  var deliveryaddresses = detailsource.getRange(17,2,1,1).getValues();
+  var emailsubject = '[Fit Analytics] Statement of Account for ' + companyname + ' as of ' + statementdate;
+  var emailtext = 'Dear ' + addressees + '<br><br>Please find attached the statement of account for ' + companyname + ' as of ' + statementdate + '.<br><br><br>Please contact us if you have any questions.' ;
+  var sfdcid= detailsource.getRange(21,2,1,1).getValue();
+  var reviewTest = calcsource.getRange(2,2,1,1).getValue();
+  var approvalTest = calcsource.getRange(4,2,1,1).getValue();
+  var emailfooter = ('<div><br><br><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
+  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com', attachments:[statementBlob.getAs(MimeType.PDF)]});  
+  MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Statement of Account] for ' + companyname + 'as of ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
+  moveBillingLogLineItem();
+  // Process alternate user response  
+  } else if (result == ui.Button.NO) {
+    ui.alert('Print statement before closing. Please note that a copy of the email has been logged in Salesforce.');
+    MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
+    moveBillingLogLineItem()
+  // User cancels process
+  } else if (result == ui.Button.CANCEL) {
+    ui.alert('Process cancelled, the statement has been created but not sent');
+  // User closes wndow with no response
+  } else if (result == ui.Button.CLOSE) {
+    ui.alert('Process cancelled, the statement has been created but not sent');
+  }
+}
+
+function updateStatement() {
+  var sheet = SpreadsheetApp.getActive();
+  var ui = SpreadsheetApp.getUi();
+  var statement = sheet.getSheetByName('Statement');
+  var log = sheet.getSheetByName('Statement Items');
+  var message = 'Under Construction';
+  ui.alert(message);
 }
