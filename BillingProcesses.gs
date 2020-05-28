@@ -1,9 +1,3 @@
-//Fit Analytics GmbH Billing Package
-//Version 2.0.5
-//Kyle Phillips 2020
-
-
-
 // Global Variables
   var ui = SpreadsheetApp.getUi();
   var active = SpreadsheetApp.getActiveSpreadsheet();
@@ -494,8 +488,7 @@ function createOneOff(){
 
 function assembleLineItems(){
   var sheet = SpreadsheetApp.getActive();
-  var list = SpreadsheetApp.openById('1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE');
-  var items = list.getSheetByName('List');
+  var items = sheet.getSheetByName('Line Items');
   var details = sheet.getSheetByName('Details');
   var calculations = sheet.getSheetByName('Calculations');  
   var quantity = calculations.getRange(5,5,1,1).getValue();
