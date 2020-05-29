@@ -498,10 +498,26 @@ function assembleLineItems(){
   var sheet = SpreadsheetApp.getActive();
   var list = SpreadsheetApp.openById('1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE');
   var items = list.getSheetByName('List');
+  var countSheet = list.getSheetByName('Count');
   var details = sheet.getSheetByName('Details');
-  var calculations = sheet.getSheetByName('Calculations');  
-  var quantity = calculations.getRange(5,5,1,1).getValue();
+  var calculations = sheet.getSheetByName('Calculations');
+  var prefix = details.getRange(4,2,1,1).getValue();  
+  var countFinder = countSheet.createTextFinder(prefix);
+  var countRow = countFinder.findNext().getRow();
+  var count = countSheet.getRange(countRow,2,1,1).getValue();
+  var countOf = calculations.getRange(5,5,1,1);
+    countOf.setValue(count);
+    updateLineItems()
+}
+
+function updateLineItems(){
+  var sheet = SpreadsheetApp.getActive();
+  var list = SpreadsheetApp.openById('1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE');
+  var items = list.getSheetByName('List');
+  var details = sheet.getSheetByName('Details');
+  var calculations = sheet.getSheetByName('Calculations');
   var prefix = details.getRange(4,2,1,1).getValue();
+  var quantity = calculations.getRange(5,5,1,1).getValue();
   var prefixFinder = items.createTextFinder(prefix);
   var row = prefixFinder.findNext().getRow();
   var lineItems = items.getRange(row,4,quantity,11).getValues();
@@ -684,9 +700,20 @@ function createStatement( optSSId, optSheetId ) {
 
 function updateStatement() {
   var sheet = SpreadsheetApp.getActive();
-  var ui = SpreadsheetApp.getUi();
-  var statement = sheet.getSheetByName('Statement');
   var log = sheet.getSheetByName('Statement Items');
-  var message = 'Under Construction';
-  ui.alert(message);
+  var details = sheet.getSheetByName('Details');
+  var dunningSheet = SpreadsheetApp.openById('1y0R04D4YsWjYUO9L6vpLMHp9rFKX0xNbSW1H13oDZR8');
+  var dataSheet = dunningSheet.getSheetByName('Details');
+  var list = dunningSheet.getSheetByName('Log');
+  var prefix = details.getRange(4,2,1,1).getValue();
+  var numberFinder = dataSheet.createTextFinder(prefix);
+  var quantityLoc = numberFinder.findNext().getRow();
+  var quantity = dataSheet.getRange(quantityLoc,5,1,1).getValue();
+  var itemsRange = list.getRange(29,1,quantity,11);
+  var rowfinder = list.createTextFinder(prefix);
+  var startRow = rowfinder.findNext().getRow();
+  var statementItems = dataSheet.getRange(startRow,1,quantity,24).getValues();
+  var update = log.getRange(2,1,quantity,24);
+  update.setvalues(statementItems);
+  Logger.log('number is ' + prefix);
 }
