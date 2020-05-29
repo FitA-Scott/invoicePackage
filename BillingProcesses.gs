@@ -26,6 +26,7 @@ function onOpen(e) {
          .addItem('Create Statement','createStatement'))
       .addToUi();     
       searchNumber();
+      getBillingLogQuantity();
       importCustomerData();
       pullBillingInfo();
       cleanUpLineItems()
@@ -698,22 +699,35 @@ function createStatement( optSSId, optSheetId ) {
   }
 }
 
+function getBillingLogQuantity(){
+  var sheet = SpreadsheetApp.getActive();
+  var details = sheet.getSheetByName('Details');
+  var calculations = sheet.getSheetByName('Calculations');
+  var logSheet = SpreadsheetApp.openById('1CgitHYvXGAUVBsci_Pyz0caPDww7Wf4JJbM29h6ZDsM');
+  var countSheet = logSheet.getSheetByName('Statements');
+  var prefix = details.getRange(4,2,1,1).getValue();
+  var prefixFinder = countSheet.createTextFinder(prefix);
+  var row = prefixFinder.findNext().getRow();
+  var count = countSheet.getRange(row,4,1,1).getValue();
+  var setCount = calculations.getRange(5,6,1,1);
+  var statementItems = sheet.getSheetByName('Statement Items');
+  var clearRange = statementItems.getRange(2,1,statementItems.getLastRow(),statementItems.getLastColumn());
+  clearRange.clearContent();
+  setCount.setValue(count);
+}
+
 function updateStatement() {
   var sheet = SpreadsheetApp.getActive();
   var log = sheet.getSheetByName('Statement Items');
   var details = sheet.getSheetByName('Details');
-  var dunningSheet = SpreadsheetApp.openById('1y0R04D4YsWjYUO9L6vpLMHp9rFKX0xNbSW1H13oDZR8');
-  var dataSheet = dunningSheet.getSheetByName('Details');
-  var list = dunningSheet.getSheetByName('Log');
   var prefix = details.getRange(4,2,1,1).getValue();
-  var numberFinder = dataSheet.createTextFinder(prefix);
-  var quantityLoc = numberFinder.findNext().getRow();
-  var quantity = dataSheet.getRange(quantityLoc,5,1,1).getValue();
-  var itemsRange = list.getRange(29,1,quantity,11);
+  var calculations = sheet.getSheetByName('Calculations');
+  var dunningSheet = SpreadsheetApp.openById('1y0R04D4YsWjYUO9L6vpLMHp9rFKX0xNbSW1H13oDZR8');
+  var list = dunningSheet.getSheetByName('Log');
+  var quantity = calculations.getRange(5,6,1,1).getValue();
   var rowfinder = list.createTextFinder(prefix);
   var startRow = rowfinder.findNext().getRow();
-  var statementItems = dataSheet.getRange(startRow,1,quantity,24).getValues();
-  var update = log.getRange(2,1,quantity,24);
-  update.setvalues(statementItems);
-  Logger.log('number is ' + prefix);
+  var statementItems = list.getRange(startRow,1,quantity,25).getValues();
+  var update = log.getRange(2,1,quantity,25);
+  update.setValues(statementItems);
 }
