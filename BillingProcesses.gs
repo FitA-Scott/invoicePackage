@@ -660,7 +660,7 @@ function createStatement( optSSId, optSheetId ) {
       }
     }
     var response = UrlFetchApp.fetch(url + url_ext, header);
-    var statementBlob = response.getBlob().setName('Fit_Analytics_' + accountName + '_' + servicePeriod + 'Statement_of_Account' + '.pdf');
+    var statementBlob = response.getBlob().setName('Fit_Analytics_' + accountName + '_' + servicePeriod + '_Statement_of_Account' + '.pdf');
     folder.createFile(statementBlob);
   }
     var result = ui.alert('Would you like to e-mail the statement?', ui.ButtonSet.YES_NO_CANCEL);
@@ -670,11 +670,12 @@ function createStatement( optSSId, optSheetId ) {
   var infosheet = SpreadsheetApp.getActive();
   var infosource = infosheet.getSheetByName('Invoice');
   var detailsource = infosheet.getSheetByName('Details');
-  var calcsource = infosheet.getSheetByName('Calculations');  
+  var calcsource = infosheet.getSheetByName('Calculations');
+  var statementsource = infosheet.getSheetByName('Statement');
   var companyname = detailsource.getRange(3,2,1,1).getValues();
-  var statementdate = infosource.getRange(18,2,1,1).getValue();
+  var statementdate = statementsource.getRange(8,8,1,1).getValue();
   var bccaddress = calcsource.getRange(17,2,1,1).getValues();
-  var addressees = detailsource.getRange(2,16,1,1).getValue();
+  var addressees = detailsource.getRange(16,2,1,1).getValue();
   var deliveryaddresses = detailsource.getRange(17,2,1,1).getValues();
   var emailsubject = '[Fit Analytics] Statement of Account for ' + companyname + ' as of ' + statementdate;
   var emailtext = 'Dear ' + addressees + '<br><br>Please find attached the statement of account for ' + companyname + ' as of ' + statementdate + '.<br><br><br>Please contact us if you have any questions.' ;
@@ -688,7 +689,7 @@ function createStatement( optSSId, optSheetId ) {
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
     ui.alert('Print statement before closing. Please note that a copy of the email has been logged in Salesforce.');
-    MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
+    MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Statement of Account] for ' + companyname + 'for ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
     moveBillingLogLineItem()
   // User cancels process
   } else if (result == ui.Button.CANCEL) {
