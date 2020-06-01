@@ -1,5 +1,5 @@
 //Fit Analytics GmbH Billing Package
-//Version 2.1.2
+//Version 2.1.3
 //Kyle Phillips 2020
 
 
@@ -225,7 +225,8 @@ function savePDF( optSSId, optSheetId ) {
   var detailsource = infosheet.getSheetByName('Details');
   var calcsource = infosheet.getSheetByName('Calculations');  
   var companyname = detailsource.getRange(3,2,1,1).getValues();
-  var invoiceperiod = infosource.getRange(9,7,1,1).getValues();
+  var invoiceperiod = infosource.getRange(10,7,1,1).getValues();
+  var invoiceNumber = infosource.getRange(9,7,1,1).getValue();  
   var bccaddress = calcsource.getRange(17,2,1,1).getValues();
   var deliveryaddresses = detailsource.getRange(17,2,1,1).getValues();
   var emailsubject = calcsource.getRange(22,2,1,1).getValues();
@@ -237,6 +238,17 @@ function savePDF( optSSId, optSheetId ) {
   var emailfooter = ('<div><br><br><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; puz.7002@digi-bel.de', attachments:[blob.getAs(MimeType.PDF)]});  
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
+  var draft = GmailApp.getDrafts()[0];
+  var draftId = draft.getId();
+  var emailLog = SpreadsheetApp.openById('1lm2rIyEF9qb_JBgIFW-qXJ2YZCIWhA2K1D0rQjeZnrQ');
+  var updateSheet = emailLog.getSheetByName('Log');
+  var updateRow = updateSheet.getLastRow()+1;
+  var logNumber = updateSheet.getRange(updateRow,1,1,1);
+  var logSubject = updateSheet.getRange(updateRow,2,1,1);
+  var logId = updateSheet.getRange(updateRow,3,1,1);
+  logNumber.setValue(invoiceNumber);
+  logSubject.setValue(emailsubject);
+  logId.setValue(draftId);
   moveBillingLogLineItem();
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
