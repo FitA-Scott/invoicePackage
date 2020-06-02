@@ -29,7 +29,7 @@ function onOpen(e) {
       getBillingLogQuantity();
       importCustomerData();
       pullBillingInfo();
-      cleanUpLineItems()
+      assembleLineItems();
   var testRange = active.getSheetByName('Details').getRange(23,2,1,1).getValue();
     if ( testRange != '') {
       specialSalesData();
@@ -225,8 +225,7 @@ function savePDF( optSSId, optSheetId ) {
   var detailsource = infosheet.getSheetByName('Details');
   var calcsource = infosheet.getSheetByName('Calculations');  
   var companyname = detailsource.getRange(3,2,1,1).getValues();
-  var invoiceperiod = infosource.getRange(10,7,1,1).getValues();
-  var invoiceNumber = infosource.getRange(9,7,1,1).getValue();  
+  var invoiceperiod = infosource.getRange(9,7,1,1).getValues();
   var bccaddress = calcsource.getRange(17,2,1,1).getValues();
   var deliveryaddresses = detailsource.getRange(17,2,1,1).getValues();
   var emailsubject = calcsource.getRange(22,2,1,1).getValues();
@@ -238,17 +237,6 @@ function savePDF( optSSId, optSheetId ) {
   var emailfooter = ('<div><br><br><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com; puz.7002@digi-bel.de', attachments:[blob.getAs(MimeType.PDF)]});  
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
-  var draft = GmailApp.getDrafts()[0];
-  var draftId = draft.getId();
-  var emailLog = SpreadsheetApp.openById('1lm2rIyEF9qb_JBgIFW-qXJ2YZCIWhA2K1D0rQjeZnrQ');
-  var updateSheet = emailLog.getSheetByName('Log');
-  var updateRow = updateSheet.getLastRow()+1;
-  var logNumber = updateSheet.getRange(updateRow,1,1,1);
-  var logSubject = updateSheet.getRange(updateRow,2,1,1);
-  var logId = updateSheet.getRange(updateRow,3,1,1);
-  logNumber.setValue(invoiceNumber);
-  logSubject.setValue(emailsubject);
-  logId.setValue(draftId);
   moveBillingLogLineItem();
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
@@ -486,16 +474,12 @@ function openAdminPanel(){
 function pullBillingInfo() {
   var infosheet = SpreadsheetApp.getActive().getSheetByName('Purchase Data');
   var detailsheet = SpreadsheetApp.getActive().getSheetByName('Calculations');
-  var itemssheet = SpreadsheetApp.getActive().getSheetByName('Line Items');
   var purloc = detailsheet.getRange(7,5,1,1).getValue();
   var retloc = detailsheet.getRange(8,5,1,1).getValue();
   var purformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1rr5vp4EfKgo6U3lZyE-idOIIi_xrYq95LyZkuxKDtVQ/","' + purloc + '!A1:G")';
   var retformula = '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1rr5vp4EfKgo6U3lZyE-idOIIi_xrYq95LyZkuxKDtVQ/","' + retloc + '!A1:G")'; 
   var purchases = infosheet.getRange(1,1,1,1);
   var returns = infosheet.getRange(1,9,1,1);
-  var formula = '=IMPORTRANGE("1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE","List!A1:N")';
-  var range = itemssheet.getRange(1,1,1,1);
-    range.setValue(formula);
     purchases.setValue(purformula);
     returns.setValue(retformula);
 }
@@ -520,7 +504,15 @@ function assembleLineItems(){
   var count = countSheet.getRange(countRow,2,1,1).getValue();
   var countOf = calculations.getRange(5,5,1,1);
     countOf.setValue(count);
-    updateLineItems()
+    cleanUpLineItems()
+}
+
+function cleanUpLineItems() {
+  var calc = SpreadsheetApp.getActive().getSheetByName('Calculations');
+  var numberOfRows = calc.getRange(5,5,1,1).getValue();
+  var itemRange = calc.getRange(29,1,numberOfRows,11);
+  itemRange.clear();
+  updateLineItems();
 }
 
 function updateLineItems(){
@@ -626,14 +618,6 @@ function buildHistoricalLineItem(){
   }
 }
 
-function cleanUpLineItems() {
-  var calc = SpreadsheetApp.getActive().getSheetByName('Calculations');
-  var numberOfRows = calc.getRange(5,5,1,1).getValue();
-  var itemRange = calc.getRange(29,1,numberOfRows,11);
-  itemRange.clear();
-  assembleLineItems();
-}
-
 function createStatement( optSSId, optSheetId ) {
   var detailSource = SpreadsheetApp.getActive().getSheetByName('Details');
   var calcSource = SpreadsheetApp.getActive().getSheetByName('Calculations');
@@ -697,10 +681,12 @@ function createStatement( optSSId, optSheetId ) {
   var emailfooter = ('<div><br><br><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com', attachments:[statementBlob.getAs(MimeType.PDF)]});  
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Statement of Account] for ' + companyname + 'as of ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
+  moveBillingLogLineItem();
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
     ui.alert('Print statement before closing. Please note that a copy of the email has been logged in Salesforce.');
     MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Statement of Account] for ' + companyname + 'for ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
+    moveBillingLogLineItem()
   // User cancels process
   } else if (result == ui.Button.CANCEL) {
     ui.alert('Process cancelled, the statement has been created but not sent');
