@@ -247,7 +247,24 @@ function savePDF( optSSId, optSheetId ) {
   } else if (result == ui.Button.CLOSE) {
     ui.alert('Process cancelled, the invoice has been created but not sent');
   }
+cancellationCheck();
 }
+
+function cancellationCheck(){
+  var sheet = SpreadsheetApp.getActive();
+  var calc = sheet.getSheetByName('Calculations');
+  var type = calc.getRange(8,2,1,1).getValue();
+  if (type == 'Cancellation'){
+    var history = sheet.getSheetByName('Historical Data');    
+    var invNum = calc.getRange(26,2,1,1).getValue();
+    var findNum = history.createTextFinder(invNum);
+    var row = findNum.findNext().getRow();
+    var newNum = history.getRange(row,8,1,1);
+   newNum.setValue(invNum);
+    resetSheet();
+  }
+}
+
 function moveBillingLogLineItem() {
   var destinationSheet = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw').getSheetByName('Incoming Line Items');
   var destinationRange = destinationSheet.getRange(destinationSheet.getLastRow()+1,1,1,15);
