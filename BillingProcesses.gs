@@ -18,6 +18,9 @@ function onOpen(e) {
       .addSubMenu(ui.createMenu('Create')            
          .addItem('Proof for Approval','approvalProcess')
          .addItem('Final Invoice','routeProcess'))
+      .addSubMenu(ui.createMenu('Cancel')            
+         .addItem('Create Cancellation','cancelInvoice')
+         .addItem('Reset Invoice','resetSheet'))
       .addSubMenu(ui.createMenu('Aditional Info')           
          .addItem('Open Contracts Folder','viewContract')
          .addItem('Open Invoices Folder','viewInvoices'))
@@ -127,13 +130,6 @@ function approvalProcess( optSSId, optSheetId ){
   }
 }
 
-function createCancellation(){
-  var cancellation = HtmlService.createHtmlOutputFromFile('Details')
-      .setWidth(450)
-      .setHeight(200);    
-  SpreadsheetApp.getUi().showModalDialog(cancellation, 'Enter Invoice Details');
-}
-
 function logData(billmonth, billyear) {
   var detailsheet = SpreadsheetApp.getActive()
   var calc = detailsheet.getSheetByName('Calculations');
@@ -164,15 +160,14 @@ function cancelInvoice(){
   var newname = logsheet.getRange(logsheet.getLastRow()+1,3,1,1);
   var prefix = calc.getRange(29,1,1,1).getValue();
   var newnum = calc.getRange(16,5,1,1).getValue();
-  var status = 'Cancelled';
-  var invnum = calc.getRange(9,2,1,1).getValue(); 
-  var rowFinder = history.createTextFinder(invnum);
-  var rowNum = rowFinder.findNext().getRow();
-  var newstatus = history.getRange(rowNum,6,1,1);
+  var type = 'Cancellation';
+  var multiplier = '-1';
+  var newtype = calc.getRange(8,2,1,1);
+  var newmultiplier = calc.getRange(12,2,1,1);
   newrow.setValue(newnum);
   newname.setValue(prefix);
-  newstatus.setValue(status);
-  buildHistoricalLineItem();
+  newtype.setValue(type);
+  newmultiplier.setValue(multiplier);
 }
 
 function savePDF( optSSId, optSheetId ) {
