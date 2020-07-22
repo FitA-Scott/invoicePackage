@@ -498,13 +498,6 @@ function pullBillingInfo() {
     returns.setValue(retformula);
 }
 
-function createOneOff(){
-  var oneoff = HtmlService.createHtmlOutputFromFile('OneOffInvoice')
-      .setWidth(450)
-      .setHeight(400);    
-  SpreadsheetApp.getUi().showModalDialog(oneoff, 'Enter Invoice Details');
-}
-
 function assembleLineItems(){
   var sheet = SpreadsheetApp.getActive();
   var list = SpreadsheetApp.openById('1D7HfOkKW7k752Abclg2Aam65dlRYFyMxYJ2IDBfDkGE');
