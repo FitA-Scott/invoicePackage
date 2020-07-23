@@ -685,6 +685,7 @@ function createStatement( optSSId, optSheetId ) {
   var sfdcid= detailsource.getRange(21,2,1,1).getValue();
   var reviewTest = calcsource.getRange(2,2,1,1).getValue();
   var approvalTest = calcsource.getRange(4,2,1,1).getValue();
+  GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext, bcc: 'invoices@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});
   MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Statement of Account] for ' + companyname + 'as of ' + statementdate, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[statementBlob.getAs(MimeType.PDF)]}); 
   moveBillingLogLineItem();
   // Process alternate user response  
