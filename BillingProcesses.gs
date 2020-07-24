@@ -130,26 +130,6 @@ function approvalProcess( optSSId, optSheetId ){
   }
 }
 
-function logData(billmonth, billyear) {
-  var detailsheet = SpreadsheetApp.getActive()
-  var calc = detailsheet.getSheetByName('Calculations');
-  var history = detailsheet.getSheetByName('Historical Data');
-  var billinglog = SpreadsheetApp.openById('1D5VqWLYIk3FiDHEyFmqn8XDwOerrQZEOg1hKHnoH6aw');
-  var numbersheet = billinglog.getSheetByName('Invoice Numbers');
-  var logsheet = billinglog.getSheetByName('Billing Log');
-  var newcanc = logsheet.getRange(logsheet.getLastRow()+1,2,1,1);
-  var oldnum = calc.getRange(11,2,1,1).getValue();
-  var newnum = numbersheet.getRange(2,2,1,1).getValue();
-  var invoicetype = 'Cancellation';
-  var typeRange = calc.getRange(8,2,1,1);
-  var multiplierRange = calc.getRange(12,2,1,1);
-  var multiplier = '-1';
-  var newinvnum = calc.getRange(16,5,1,1);
-    typeRange.setValue(invoicetype);  
-    multiplierRange.setValue(multiplier);
-    newinvnum.setValue(newnum);
-    newcanc.setValue(oldnum);
-}
 function cancelInvoice(){
   var detailsheet = SpreadsheetApp.getActive()
   var calc = detailsheet.getSheetByName('Calculations');
@@ -159,7 +139,7 @@ function cancelInvoice(){
   var newrow = logsheet.getRange(logsheet.getLastRow()+1,2,1,1);
   var newname = logsheet.getRange(logsheet.getLastRow()+1,3,1,1);
   var prefix = calc.getRange(29,1,1,1).getValue();
-  var newnum = calc.getRange(16,5,1,1).getValue();
+  var newnum = calc.getRange(16,5,1,1).getValue() + 'N';
   var type = 'Cancellation';
   var multiplier = '-1';
   var newtype = calc.getRange(8,2,1,1);
@@ -257,12 +237,37 @@ function cancellationCheck(){
   if (type == 'Cancellation'){
     var history = sheet.getSheetByName('Historical Data');    
     var invNum = calc.getRange(26,2,1,1).getValue();
-    var findNum = history.createTextFinder(invNum);
+    var month = calc.getRange(14,2,1,1).getValue();
+    var year = calc.getRange(13,2,1,1).getValue();
+    var period = month + " " + year;
+    var findNum = history.createTextFinder(period);
     var row = findNum.findNext().getRow();
     var newNum = history.getRange(row,8,1,1);
-   newNum.setValue(invNum);
-    resetSheet();
+        newNum.setValue(invNum);
+        resetSheet();
   }
+}
+
+function resetSheet() {
+ var document = SpreadsheetApp.getActive();
+ var calculations = document.getSheetByName('Calculations');
+ var approvalRangeOne = calculations.getRange(4,2,4,1);
+ var cancellationRangeOne = calculations.getRange(8,2,1,1);
+ var clearString = '';
+ var regularString = 'Regular';
+ var multiplyRange = calculations.getRange(12,2,1,1);
+ var multiply = '1'; 
+    approvalRangeOne.clearContent();
+    cancellationRangeOne.setValue(regularString);
+    multiplyRange.setValue(multiply);
+}
+
+function openAdminPanel(){
+    var panel = HtmlService.createHtmlOutputFromFile('AdminPanel')
+      .setTitle('Admin Panel')
+      .setWidth(300);
+  SpreadsheetApp.getUi()
+      .showSidebar(panel);
 }
 
 function moveBillingLogLineItem() {
@@ -462,27 +467,6 @@ function viewContract() {
   var newModal = '<script>window.open("https://drive.google.com/drive/folders/' + folder + '");google.script.host.close();</script>';
   var interface = HtmlService.createHtmlOutput(newModal)
   SpreadsheetApp.getUi().showModalDialog(interface, 'Opening contracts folder');
-}
-
-function resetSheet() {
- var document = SpreadsheetApp.getActive();
- var calculations = document.getSheetByName('Calculations');
- var approvalRangeOne = calculations.getRange(4,2,4,1);
- var cancellationRangeOne = calculations.getRange(8,2,1,1);
- var clearString = '';
- var regularString = 'Regular';
- var multiplyRange = calculations.getRange(12,2,1,1);
- var multiply = '1'; 
-    approvalRangeOne.setValue(clearString);
-    cancellationRangeOne.setValue(regularString);
-    multiplyRange.setValue(multiply);
-}
-function openAdminPanel(){
-    var panel = HtmlService.createHtmlOutputFromFile('AdminPanel')
-      .setTitle('Admin Panel')
-      .setWidth(300);
-  SpreadsheetApp.getUi()
-      .showSidebar(panel);
 }
 
 function pullBillingInfo() {
