@@ -113,7 +113,7 @@ function approvalProcess( optSSId, optSheetId ){
     var response = UrlFetchApp.fetch(url + url_ext, header);
     var blob = response.getBlob().setName('[INVOICE PROOF]_' + invoiceNumber + '_' + companyName + '_' + invoicePeriod + '.pdf');
     folder.createFile(blob);
-  var approvers = 'schulze@fitanalytics.com; shenhav@fitanalytics.com';
+  var approvers = 'schulze@fitanalytics.com';
     GmailApp.sendEmail(approvers,messageSubject,'',{name:'Accounts Receivable',from:'invoices@fitanalytics.com',replyto:'invoices@fitanalytics.com', htmlBody: messageBody, attachments:[blob.getAs(MimeType.PDF)]}); 
   var requestSheet = SpreadsheetApp.openById('1s2RFxnJTBIfIWg64gGqhYv95v0wWTXN0Qp4H4_NvWFA').getSheetByName('Requests');
   var requestNumberRange = requestSheet.getRange(requestSheet.getLastRow()+1,1,1,1);
@@ -211,14 +211,15 @@ function savePDF( optSSId, optSheetId ) {
   var sfdcid= detailsource.getRange(21,2,1,1).getValue();
   var reviewTest = calcsource.getRange(2,2,1,1).getValue();
   var approvalTest = calcsource.getRange(4,2,1,1).getValue();
+  var logAddresses = 'emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com;6710646@bcc.hubspot.com,salesops@fitanalytics.com';  
   var emailfooter = ('<div><br><br><br><br><br>Kind regards</div><br><b>Fit Analytics Accounting Team</b><br><br><img src="https://ci5.googleusercontent.com/proxy/92ywHWBtnnjrrcbYhVDoqWjHZNDKD2ukCvaIDfIoFxERJKyIfwLaSW13NVs2ECuVzo63kHv6ZIpZMuPWjBlr28gADggLhp-h4p5qhcQ37au1-aDY2xQTaB9sOGNKtkGk3Rvs5Ze8Xv4C4rjPmYfSrp__0mwmpG5q0THAh84N8eiA3K1HnYXb4OnvuZC4IOZKlJXTDZs64C8=s0-d-e1-ft#https://docs.google.com/uc?export=download&amp;id=0B0gpnzRVY698NUN3WGJoWEk1NXc&amp;revid=0B0gpnzRVY698aUFoUitYeDNpQTRCNWtqTW9VWEtkbGlmK2lJPQ" alt="" width="169" height="40" style="font-family:arial,helvetica,sans-serif;font-size:12.8px" class="CToWUd"></div><div style="font-size:11.1px; color:#666666" ><b>SOLVE SIZING. SELL SMARTER.<b></div><br><div>Voigtstraße 3 | 10247 Berlin</div><br><div>www.fitanalytics.com</div>');
   GmailApp.createDraft(deliveryaddresses, emailsubject,'',{ name: 'Fit Analytics GmbH Accounts Receivable', from: 'invoices@fitanalytics.com', replyto: 'invoices@fitanalytics.com', htmlBody: emailtext + emailfooter, bcc: 'invoices@fitanalytics.com', attachments:[blob.getAs(MimeType.PDF)]});  
-  MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
+  MailApp.sendEmail(logAddresses,'[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
   moveBillingLogLineItem();
   // Process alternate user response  
   } else if (result == ui.Button.NO) {
     ui.alert('Print invoice before closing. Please note that a copy of the email has been sent to both Digi-Bel and Salesforce.');
-    MailApp.sendEmail('emailtosalesforce@18xzv579vg9bl3mjpl6uzyy6ho177oxejfjuyovc7o6jozgn53.0o-s6v5uai.eu9.le.salesforce.com','[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
+    MailApp.sendEmail(logAddresses,'[Invoice] for ' + companyname + 'for ' + invoiceperiod, 'ref: ' + sfdcid, { name: 'General FitA', attachments:[blob.getAs(MimeType.PDF)]}); 
     moveBillingLogLineItem()
   // User cancels process
   } else if (result == ui.Button.CANCEL) {
@@ -278,29 +279,17 @@ function moveBillingLogLineItem() {
       destinationRange.setValues(billingLogLineItem);
 }
 
-function importCustomerData() {
-  var activeSheet = SpreadsheetApp.getActive().getSheetByName('Details');
-  var detailSheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI').getSheetByName('Client Info');  
-  var updateRowNum = searchNumber(); 
-  var updateInfo = detailSheet.getRange(updateRowNum,1,1,27).getValues();
-  var updateSheet = SpreadsheetApp.getActive().getSheetByName('Customer Data');
-  var updateDest = updateSheet.getRange(updateSheet.getLastRow()+1,1,1,27);
-  updateDest.setValues(updateInfo);
-  refreshCustomerData();
-}
-
 function searchNumber() {
   var originSheet = SpreadsheetApp.getActive().getSheetByName('Details');
   var valuesSheet = SpreadsheetApp.openById('1WQBEVDTyK8XvTG5BkMJMbqWMyKTf3aYuFjCQPuc23GI').getSheetByName('Client Info');  
   var accountNumber = originSheet.getRange(5,2,1,1).getValue();
-  var updateValues = valuesSheet.getDataRange().getValues();
-     for (var i = 0; i < updateValues.length; i++){
-     for (var j = 0; j < updateValues[i].length; j++){
-        if(updateValues[i][j] == accountNumber){
-    return i+1;
-        }
-      }
-    }  
+  var updateValues = valuesSheet.getDataRange();
+  var numberFinder = updateValues.createTextFinder(accountNumber);
+  var row = numberFinder.findNext().getRow();
+  var update = valuesSheet.getRange(row,3,1,18).getValues();
+  var destination = originSheet.getRange(25,2,1,18);
+  destination.setValues(update);
+  refreshCustomerData();
   }
 
 function specialSalesData() {
@@ -323,29 +312,28 @@ function specialSalesData() {
 
 function refreshCustomerData() {
   var current = SpreadsheetApp.getActive();
-  var inbound = current.getSheetByName('Customer Data');
   var destination = current.getSheetByName('Details');
   var refreshDate = new Date();
-  var newRefreshDate = inbound.getRange(inbound.getLastRow(),21,1,1);
+  var newRefreshDate = destination.getRange(destination.getLastRow(),20,1,1);
   //New values imported form Salesforce report
-  var commonName = inbound.getRange(inbound.getLastRow(),3,1,1).getValue();
-  var prefix = inbound.getRange(inbound.getLastRow(),4,1,1).getValue();
-  var legalName = inbound.getRange(inbound.getLastRow(),5,1,1).getValue();
-  var addressOne = inbound.getRange(inbound.getLastRow(),6,1,1).getValue();
-  var addressTwo = inbound.getRange(inbound.getLastRow(),7,1,1).getValue();
-  var addressThree = inbound.getRange(inbound.getLastRow(),8,1,1).getValue();
-  var addressFour = inbound.getRange(inbound.getLastRow(),9,1,1).getValue();
-  var billingContacts = inbound.getRange(inbound.getLastRow(),10,1,1).getValue();
-  var billingEmails = inbound.getRange(inbound.getLastRow(),11,1,1).getValue();
-  var currency = inbound.getRange(inbound.getLastRow(),12,1,1).getValue(); 
-  var billMethod = inbound.getRange(inbound.getLastRow(),13,1,1).getValue();
-  var billcycle = inbound.getRange(inbound.getLastRow(),14,1,1).getValue();
-  var vatId = inbound.getRange(inbound.getLastRow(),15,1,1).getValue();
-  var poNumber = inbound.getRange(inbound.getLastRow(),16,1,1).getValue();
-  var paymentTerms = inbound.getRange(inbound.getLastRow(),17,1,1).getValue();
-  var costCenter = inbound.getRange(inbound.getLastRow(),18,1,1).getValue();
-  var salesforceId = inbound.getRange(inbound.getLastRow(),19,1,1).getValue();
-  var contractFolder = inbound.getRange(inbound.getLastRow(),20,1,1).getValue();
+  var commonName = destination.getRange(destination.getLastRow(),2,1,1).getValue();
+  var prefix = destination.getRange(destination.getLastRow(),3,1,1).getValue();
+  var legalName = destination.getRange(destination.getLastRow(),4,1,1).getValue();
+  var addressOne = destination.getRange(destination.getLastRow(),5,1,1).getValue();
+  var addressTwo = destination.getRange(destination.getLastRow(),6,1,1).getValue();
+  var addressThree = destination.getRange(destination.getLastRow(),7,1,1).getValue();
+  var addressFour = destination.getRange(destination.getLastRow(),8,1,1).getValue();
+  var billingContacts = destination.getRange(destination.getLastRow(),9,1,1).getValue();
+  var billingEmails = destination.getRange(destination.getLastRow(),10,1,1).getValue();
+  var currency = destination.getRange(destination.getLastRow(),11,1,1).getValue(); 
+  var billMethod = destination.getRange(destination.getLastRow(),12,1,1).getValue();
+  var billcycle = destination.getRange(destination.getLastRow(),13,1,1).getValue();
+  var vatId = destination.getRange(destination.getLastRow(),14,1,1).getValue();
+  var poNumber = destination.getRange(destination.getLastRow(),15,1,1).getValue();
+  var paymentTerms = destination.getRange(destination.getLastRow(),16,1,1).getValue();
+  var costCenter = destination.getRange(destination.getLastRow(),17,1,1).getValue();
+  var salesforceId = destination.getRange(destination.getLastRow(),18,1,1).getValue();
+  var contractFolder = destination.getRange(destination.getLastRow(),19,1,1).getValue();
   // Destinations for the new values
   var newCommonName = destination.getRange(2,2,1,1);
   var newLegalName = destination.getRange(3,2,1,1);
