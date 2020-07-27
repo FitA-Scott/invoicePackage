@@ -30,7 +30,6 @@ function onOpen(e) {
       .addToUi();     
       searchNumber();
       getBillingLogQuantity();
-      importCustomerData();
       pullBillingInfo();
       assembleLineItems();
   var testRange = active.getSheetByName('Details').getRange(23,2,1,1).getValue();
