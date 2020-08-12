@@ -13,7 +13,7 @@ function onOpen(e) {
       .addItem('Show Navigation Panel', 'showSidebar')
       .addSeparator()
       .addSubMenu(ui.createMenu('Refresh Data')
-         .addItem('Refresh Client Data', 'importCustomerData')
+         .addItem('Refresh Client Data', 'searchNumber')
          .addItem('Refresh Line Items','assembleLineItems'))
       .addSubMenu(ui.createMenu('Create')            
          .addItem('Proof for Approval','approvalProcess')
