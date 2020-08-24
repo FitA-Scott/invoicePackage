@@ -158,7 +158,7 @@ function savePDF( optSSId, optSheetId ) {
   var servicePeriodText = invoiceSource.getRange(10,7,1,1).getValue();
   var servicePeriod = servicePeriodText.replace(" ","_");
   var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
-  var url = ss.getUrl().replace(/edit$/,'');
+  var url = 'https://docs.google.com/spreadsheets/d/' + SpreadsheetApp.getActiveSpreadsheet().getId() + '/';
   var parents = DriveApp.getFileById(ss.getId()).getParents();
   if (parents.hasNext()) {
     var folder = parents.next();
