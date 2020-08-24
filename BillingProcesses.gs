@@ -82,7 +82,7 @@ function approvalProcess( optSSId, optSheetId ){
   var htmlButton = '<table width="100%" cellspacing="0" cellpadding="25"><tr><td><table cellspacing="0" cellpadding="25"><tr><td style="border-radius: 25px;" "bgcolor=#FF6B6B”><a href="'+ linkToForm +'" target="_blank" style="padding: 8px 12px; border: 2px solid #FF6B6B;border-radius: 4px;font-family: Roboto, sans-serif;font-size: 14px; color: #FF6B6B;text-decoration: none;font-weight:bold;display: inline-block;">Go To Response Form</a></td></tr></table></td></tr></table>';
   var messageBody = 'Hi All,<p><p>An invoice was created for '+companyName+' that was flagged for review in the Billing Summaries sheet. <p><p>' + 'The Billing team has included the following message:<p><p>' + text + '<p><p>A copy of this invoice can be found attached to this email. Could you please review this invoice and provide an approval or rejection response using the form found by clicking the button below.<br><br><br>'+htmlButton+'<br><br><br>Kind Regards,<p><p><p>Finance and Legal Team';
   var ss = (optSSId) ? SpreadsheetApp.openById(optSSId) : SpreadsheetApp.getActiveSpreadsheet();
-  var url = ss.getUrl().replace(/edit$/,'');
+  var url = 'https://docs.google.com/spreadsheets/d/' + SpreadsheetApp.getActiveSpreadsheet().getId() + '/';
   var parents = DriveApp.getFileById(ss.getId()).getParents();
   if (parents.hasNext()) {
     var folder = DriveApp.getFolderById('11F6u9Wk1AaGG1tCAEFH9120EWbWBmHuH');
