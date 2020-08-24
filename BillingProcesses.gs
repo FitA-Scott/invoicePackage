@@ -1,5 +1,5 @@
 //Fit Analytics GmbH Billing Package
-//Version 2.1.5
+//Version 2.1.6
 //Kyle Phillips 2020
 
 
